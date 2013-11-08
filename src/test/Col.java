@@ -1,3 +1,4 @@
+package test;
 import org.antlr.v4.runtime.*;
 
 class Col{

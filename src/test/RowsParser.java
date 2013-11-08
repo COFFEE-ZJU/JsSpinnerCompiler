@@ -1,3 +1,4 @@
+package test;
 // Generated from Rows.g by ANTLR 4.0
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
