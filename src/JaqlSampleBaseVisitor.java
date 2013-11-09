@@ -28,6 +28,8 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 
 	@Override public T visitWindowRowLabel(JaqlSampleParser.WindowRowLabelContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitTimeUnit(JaqlSampleParser.TimeUnitContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitAggrFuncNames(JaqlSampleParser.AggrFuncNamesContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitAggrFunc(JaqlSampleParser.AggrFuncContext ctx) { return visitChildren(ctx); }

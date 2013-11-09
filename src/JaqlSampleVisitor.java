@@ -27,6 +27,8 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitWindowRowLabel(JaqlSampleParser.WindowRowLabelContext ctx);
 
+	T visitTimeUnit(JaqlSampleParser.TimeUnitContext ctx);
+
 	T visitAggrFuncNames(JaqlSampleParser.AggrFuncNamesContext ctx);
 
 	T visitAggrFunc(JaqlSampleParser.AggrFuncContext ctx);
