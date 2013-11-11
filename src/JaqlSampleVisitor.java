@@ -5,6 +5,8 @@ import org.antlr.v4.runtime.Token;
 public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 	T visitStream(JaqlSampleParser.StreamContext ctx);
 
+	T visitCondCompLabel(JaqlSampleParser.CondCompLabelContext ctx);
+
 	T visitVar(JaqlSampleParser.VarContext ctx);
 
 	T visitAssignView(JaqlSampleParser.AssignViewContext ctx);
@@ -21,8 +23,6 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitJoinOut(JaqlSampleParser.JoinOutContext ctx);
 
-	T visitConditions2(JaqlSampleParser.Conditions2Context ctx);
-
 	T visitTansformLabel(JaqlSampleParser.TansformLabelContext ctx);
 
 	T visitWindowRowLabel(JaqlSampleParser.WindowRowLabelContext ctx);
@@ -31,11 +31,19 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitAggrFuncNames(JaqlSampleParser.AggrFuncNamesContext ctx);
 
+	T visitExprs(JaqlSampleParser.ExprsContext ctx);
+
 	T visitAggrFunc(JaqlSampleParser.AggrFuncContext ctx);
+
+	T visitCondVarLabel(JaqlSampleParser.CondVarLabelContext ctx);
 
 	T visitComprator(JaqlSampleParser.CompratorContext ctx);
 
-	T visitCondition(JaqlSampleParser.ConditionContext ctx);
+	T visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx);
+
+	T visitCondSubLabel(JaqlSampleParser.CondSubLabelContext ctx);
+
+	T visitCondOrLabel(JaqlSampleParser.CondOrLabelContext ctx);
 
 	T visitReadStream(JaqlSampleParser.ReadStreamContext ctx);
 
@@ -46,8 +54,6 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 	T visitVarID(JaqlSampleParser.VarIDContext ctx);
 
 	T visitGroupSingleLabel(JaqlSampleParser.GroupSingleLabelContext ctx);
-
-	T visitConditions(JaqlSampleParser.ConditionsContext ctx);
 
 	T visitWindowLabel(JaqlSampleParser.WindowLabelContext ctx);
 
