@@ -6,12 +6,16 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
 		expr.type = "id";
 		if(ctx.ID().size() == 2){
 			String rename = ctx.ID(0).getText();
-			if(! TransVisitor.haveRename) assert false;
-			if(! rename.equals(TransVisitor.renameId) ) assert false;
+			if(! TransVisitor.haveRename || ! rename.equals(TransVisitor.renameId))
+				throw new SemanticErrorException("variable "+rename+" undefined");
 			
 			expr.id_name = ctx.ID(1).getText();
 		}
-		else expr.id_name = ctx.ID(0).getText();
+		else{
+			if(TransVisitor.haveRename)
+				throw new SemanticErrorException("variable $ undefined");
+			expr.id_name = ctx.ID(0).getText();
+		}
 		
 		return expr;
 	}
