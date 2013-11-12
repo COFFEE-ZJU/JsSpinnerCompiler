@@ -6,6 +6,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements JaqlSampleVisitor<T> {
 	@Override public T visitStream(JaqlSampleParser.StreamContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitExprAddSubLabel(JaqlSampleParser.ExprAddSubLabelContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitExprSubExprLabel(JaqlSampleParser.ExprSubExprLabelContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitCondCompLabel(JaqlSampleParser.CondCompLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitVar(JaqlSampleParser.VarContext ctx) { return visitChildren(ctx); }
@@ -32,11 +36,15 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 
 	@Override public T visitAggrFuncNames(JaqlSampleParser.AggrFuncNamesContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitExprs(JaqlSampleParser.ExprsContext ctx) { return visitChildren(ctx); }
-
 	@Override public T visitAggrFunc(JaqlSampleParser.AggrFuncContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitCondVarLabel(JaqlSampleParser.CondVarLabelContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitExprBoolLabel(JaqlSampleParser.ExprBoolLabelContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitExprMulDivLabel(JaqlSampleParser.ExprMulDivLabelContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitExprVarLabel(JaqlSampleParser.ExprVarLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitComprator(JaqlSampleParser.CompratorContext ctx) { return visitChildren(ctx); }
 
@@ -62,7 +70,13 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 
 	@Override public T visitWindowPartitionLabel(JaqlSampleParser.WindowPartitionLabelContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitExprIntLabel(JaqlSampleParser.ExprIntLabelContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitExprStringLabel(JaqlSampleParser.ExprStringLabelContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitJoinVar(JaqlSampleParser.JoinVarContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitExprNullLabel(JaqlSampleParser.ExprNullLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitTransExpr(JaqlSampleParser.TransExprContext ctx) { return visitChildren(ctx); }
 }

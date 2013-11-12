@@ -5,6 +5,10 @@ import org.antlr.v4.runtime.Token;
 public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 	T visitStream(JaqlSampleParser.StreamContext ctx);
 
+	T visitExprAddSubLabel(JaqlSampleParser.ExprAddSubLabelContext ctx);
+
+	T visitExprSubExprLabel(JaqlSampleParser.ExprSubExprLabelContext ctx);
+
 	T visitCondCompLabel(JaqlSampleParser.CondCompLabelContext ctx);
 
 	T visitVar(JaqlSampleParser.VarContext ctx);
@@ -31,11 +35,15 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitAggrFuncNames(JaqlSampleParser.AggrFuncNamesContext ctx);
 
-	T visitExprs(JaqlSampleParser.ExprsContext ctx);
-
 	T visitAggrFunc(JaqlSampleParser.AggrFuncContext ctx);
 
 	T visitCondVarLabel(JaqlSampleParser.CondVarLabelContext ctx);
+
+	T visitExprBoolLabel(JaqlSampleParser.ExprBoolLabelContext ctx);
+
+	T visitExprMulDivLabel(JaqlSampleParser.ExprMulDivLabelContext ctx);
+
+	T visitExprVarLabel(JaqlSampleParser.ExprVarLabelContext ctx);
 
 	T visitComprator(JaqlSampleParser.CompratorContext ctx);
 
@@ -61,7 +69,13 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitWindowPartitionLabel(JaqlSampleParser.WindowPartitionLabelContext ctx);
 
+	T visitExprIntLabel(JaqlSampleParser.ExprIntLabelContext ctx);
+
+	T visitExprStringLabel(JaqlSampleParser.ExprStringLabelContext ctx);
+
 	T visitJoinVar(JaqlSampleParser.JoinVarContext ctx);
+
+	T visitExprNullLabel(JaqlSampleParser.ExprNullLabelContext ctx);
 
 	T visitTransExpr(JaqlSampleParser.TransExprContext ctx);
 }
