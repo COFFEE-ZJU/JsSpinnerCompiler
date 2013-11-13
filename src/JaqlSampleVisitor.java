@@ -23,6 +23,8 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitPipe(JaqlSampleParser.PipeContext ctx);
 
+	T visitAggrExprs(JaqlSampleParser.AggrExprsContext ctx);
+
 	T visitProg(JaqlSampleParser.ProgContext ctx);
 
 	T visitJoinOut(JaqlSampleParser.JoinOutContext ctx);
@@ -32,8 +34,6 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 	T visitWindowRowLabel(JaqlSampleParser.WindowRowLabelContext ctx);
 
 	T visitTimeUnit(JaqlSampleParser.TimeUnitContext ctx);
-
-	T visitAggrFuncNames(JaqlSampleParser.AggrFuncNamesContext ctx);
 
 	T visitAggrFunc(JaqlSampleParser.AggrFuncContext ctx);
 
@@ -48,6 +48,8 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 	T visitComprator(JaqlSampleParser.CompratorContext ctx);
 
 	T visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx);
+
+	T visitAggrFuncName(JaqlSampleParser.AggrFuncNameContext ctx);
 
 	T visitCondSubLabel(JaqlSampleParser.CondSubLabelContext ctx);
 
