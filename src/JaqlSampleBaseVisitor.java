@@ -76,6 +76,8 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 
 	@Override public T visitJoinVar(JaqlSampleParser.JoinVarContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitIdentifier(JaqlSampleParser.IdentifierContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitExprNullLabel(JaqlSampleParser.ExprNullLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitTransExpr(JaqlSampleParser.TransExprContext ctx) { return visitChildren(ctx); }

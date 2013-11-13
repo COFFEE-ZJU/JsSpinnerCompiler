@@ -4,17 +4,17 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
     public Expression visitVar(JaqlSampleParser.VarContext ctx) { 
 		Expression expr = new Expression();
 		expr.type = "id";
-		if(ctx.ID().size() == 2){
-			String rename = ctx.ID(0).getText();
+		if(ctx.identifier().size() == 2){
+			String rename = ctx.identifier(0).getText();
 			if(! TransVisitor.haveRename || ! rename.equals(TransVisitor.renameId))
 				throw new SemanticErrorException("variable "+rename+" undefined");
 			
-			expr.id_name = ctx.ID(1).getText();
+			expr.id_name = ctx.identifier(1).getText();
 		}
 		else{
 			if(TransVisitor.haveRename)
 				throw new SemanticErrorException("variable $ undefined");
-			expr.id_name = ctx.ID(0).getText();
+			expr.id_name = ctx.identifier(0).getText();
 		}
 		
 		return expr;

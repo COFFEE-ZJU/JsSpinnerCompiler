@@ -75,6 +75,8 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitJoinVar(JaqlSampleParser.JoinVarContext ctx);
 
+	T visitIdentifier(JaqlSampleParser.IdentifierContext ctx);
+
 	T visitExprNullLabel(JaqlSampleParser.ExprNullLabelContext ctx);
 
 	T visitTransExpr(JaqlSampleParser.TransExprContext ctx);
