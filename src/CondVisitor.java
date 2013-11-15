@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
 
-public class CondVisitor extends JaqlSampleBaseVisitor<Condition> {
+public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 	@Override 
-	public Condition visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx) { 
-		Condition cond = new Condition();
+	public JsonCondition visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx) { 
+		JsonCondition cond = new JsonCondition();
 		cond.op = "and";
 		cond.left_condition = visit(ctx.conditions(0));
 		cond.right_condition = visit(ctx.conditions(1));
@@ -12,8 +12,8 @@ public class CondVisitor extends JaqlSampleBaseVisitor<Condition> {
 	}
 	
 	@Override 
-	public Condition visitCondOrLabel(JaqlSampleParser.CondOrLabelContext ctx) { 
-		Condition cond = new Condition();
+	public JsonCondition visitCondOrLabel(JaqlSampleParser.CondOrLabelContext ctx) { 
+		JsonCondition cond = new JsonCondition();
 		cond.op = "or";
 		cond.left_condition = visit(ctx.conditions(0));
 		cond.right_condition = visit(ctx.conditions(1));
@@ -21,22 +21,22 @@ public class CondVisitor extends JaqlSampleBaseVisitor<Condition> {
 	}
 	
 	@Override 
-	public Condition visitCondSubLabel(JaqlSampleParser.CondSubLabelContext ctx) { 
+	public JsonCondition visitCondSubLabel(JaqlSampleParser.CondSubLabelContext ctx) { 
 		
 		return visit(ctx.conditions()); 
 	}
 	
 	@Override 
-	public Condition visitCondVarLabel(JaqlSampleParser.CondVarLabelContext ctx) { 
-		Condition cond = new Condition();
+	public JsonCondition visitCondVarLabel(JaqlSampleParser.CondVarLabelContext ctx) { 
+		JsonCondition cond = new JsonCondition();
 		cond.op = "bool";
 		cond.bool_expression = new ExprVisitor().visit(ctx.var());
 		return cond; 
 	}
 	
 	@Override 
-	public Condition visitCondCompLabel(JaqlSampleParser.CondCompLabelContext ctx) { 
-		Condition cond = new Condition();
+	public JsonCondition visitCondCompLabel(JaqlSampleParser.CondCompLabelContext ctx) { 
+		JsonCondition cond = new JsonCondition();
 		String comp = ctx.comprator().getText();
 		switch (comp) {
 		case "<":

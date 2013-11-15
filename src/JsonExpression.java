@@ -1,8 +1,8 @@
 
-public class Expression {
+public class JsonExpression {
 	String type = null;		//id, int, bool, null, string, add, sub, div, mul;
-	Expression left = null;
-	Expression right = null;
+	JsonExpression left = null;
+	JsonExpression right = null;
 	String id_name = null;
 	String string_value = null;
 	Integer int_value = null;

@@ -1,4 +1,6 @@
+
 testID = readFromWrapper ("each") ;
+setMaster(testID);
 view = testID->window [range unbounded];
 aaa = testID->window [range 1 seconds];
-join view,aaa where view.val == aaa.val2 into {view.aaa,view.val,aaa.bbb};
+join view,aaa where view.val == aaa.val2 into {bbb:view.aaa,view.val,xxx:aaa.bbb};

@@ -1,8 +1,8 @@
 
-public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
+public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	@Override 
-    public Expression visitVar(JaqlSampleParser.VarContext ctx) { 
-		Expression expr = new Expression();
+    public JsonExpression visitVar(JaqlSampleParser.VarContext ctx) { 
+		JsonExpression expr = new JsonExpression();
 		expr.type = "id";
 		if(ctx.identifier().size() == 2){
 			String rename = ctx.identifier(0).getText();
@@ -21,8 +21,8 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
 	}
 	
 	@Override 
-	public Expression visitExprMulDivLabel(JaqlSampleParser.ExprMulDivLabelContext ctx) {
-		Expression expr = new Expression();
+	public JsonExpression visitExprMulDivLabel(JaqlSampleParser.ExprMulDivLabelContext ctx) {
+		JsonExpression expr = new JsonExpression();
 		switch (ctx.op.getText()) {
 		case "*":
 			expr.type = "mul";
@@ -40,8 +40,8 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
 	}
 	
 	@Override 
-	public Expression visitExprAddSubLabel(JaqlSampleParser.ExprAddSubLabelContext ctx) {
-		Expression expr = new Expression();
+	public JsonExpression visitExprAddSubLabel(JaqlSampleParser.ExprAddSubLabelContext ctx) {
+		JsonExpression expr = new JsonExpression();
 		switch (ctx.op.getText()) {
 		case "+":
 			expr.type = "add";
@@ -59,8 +59,8 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
 	}
 	
 	@Override 
-	public Expression visitExprIntLabel(JaqlSampleParser.ExprIntLabelContext ctx) {
-		Expression expr = new Expression();
+	public JsonExpression visitExprIntLabel(JaqlSampleParser.ExprIntLabelContext ctx) {
+		JsonExpression expr = new JsonExpression();
 		expr.type = "int";
 		expr.int_value = Integer.parseInt(ctx.INT().getText());
 		
@@ -68,8 +68,8 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
 	}
 	
 	@Override 
-	public Expression visitExprBoolLabel(JaqlSampleParser.ExprBoolLabelContext ctx) {
-		Expression expr = new Expression();
+	public JsonExpression visitExprBoolLabel(JaqlSampleParser.ExprBoolLabelContext ctx) {
+		JsonExpression expr = new JsonExpression();
 		expr.type = "bool";
 		if(ctx.TRUE() != null) expr.bool_value = true;
 		else expr.bool_value = false;
@@ -78,16 +78,16 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
 	}
 	
 	@Override 
-	public Expression visitExprNullLabel(JaqlSampleParser.ExprNullLabelContext ctx) {
-		Expression expr = new Expression();
+	public JsonExpression visitExprNullLabel(JaqlSampleParser.ExprNullLabelContext ctx) {
+		JsonExpression expr = new JsonExpression();
 		expr.type = "null";
 		
 		return expr; 
 	}
 	
 	@Override 
-	public Expression visitExprStringLabel(JaqlSampleParser.ExprStringLabelContext ctx) {
-		Expression expr = new Expression();
+	public JsonExpression visitExprStringLabel(JaqlSampleParser.ExprStringLabelContext ctx) {
+		JsonExpression expr = new JsonExpression();
 		expr.type = "string";
 		expr.string_value = ctx.STRING().getText().replaceAll("\"", "");
 		
@@ -95,13 +95,13 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<Expression> {
 	}
 	
 	@Override 
-	public Expression visitExprSubExprLabel(JaqlSampleParser.ExprSubExprLabelContext ctx) {
+	public JsonExpression visitExprSubExprLabel(JaqlSampleParser.ExprSubExprLabelContext ctx) {
 		
 		return visit(ctx.exprs()); 
 	}
 	
 	@Override 
-	public Expression visitExprVarLabel(JaqlSampleParser.ExprVarLabelContext ctx) {
+	public JsonExpression visitExprVarLabel(JaqlSampleParser.ExprVarLabelContext ctx) {
 		
 		return visit(ctx.var()); 
 	}
