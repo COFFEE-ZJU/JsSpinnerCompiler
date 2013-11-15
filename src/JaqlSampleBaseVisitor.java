@@ -48,6 +48,8 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 
 	@Override public T visitComprator(JaqlSampleParser.CompratorContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitSetMaster(JaqlSampleParser.SetMasterContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitAggrFuncName(JaqlSampleParser.AggrFuncNameContext ctx) { return visitChildren(ctx); }
@@ -73,6 +75,8 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	@Override public T visitWindowPartitionLabel(JaqlSampleParser.WindowPartitionLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitExprIntLabel(JaqlSampleParser.ExprIntLabelContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitJoinOutVar(JaqlSampleParser.JoinOutVarContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitExprStringLabel(JaqlSampleParser.ExprStringLabelContext ctx) { return visitChildren(ctx); }
 

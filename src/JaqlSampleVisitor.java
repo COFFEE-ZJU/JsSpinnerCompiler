@@ -47,6 +47,8 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitComprator(JaqlSampleParser.CompratorContext ctx);
 
+	T visitSetMaster(JaqlSampleParser.SetMasterContext ctx);
+
 	T visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx);
 
 	T visitAggrFuncName(JaqlSampleParser.AggrFuncNameContext ctx);
@@ -72,6 +74,8 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 	T visitWindowPartitionLabel(JaqlSampleParser.WindowPartitionLabelContext ctx);
 
 	T visitExprIntLabel(JaqlSampleParser.ExprIntLabelContext ctx);
+
+	T visitJoinOutVar(JaqlSampleParser.JoinOutVarContext ctx);
 
 	T visitExprStringLabel(JaqlSampleParser.ExprStringLabelContext ctx);
 
