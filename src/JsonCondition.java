@@ -1,4 +1,3 @@
-import java.util.List;
 
 public class JsonCondition {
 	String op = null;		//and, or, gt, ge, lt, le, eq, ne, bool
