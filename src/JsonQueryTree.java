@@ -14,7 +14,7 @@ public class JsonQueryTree {
 	String aggregate_operation = null;
 	Boolean is_master = null;
 	
-	List<String> projection_attibute_set = null;
+	List<JsonProjection> projection_attibute_set = null;
 	List<JsonJoinProjection> join_projection_set = null;
 	JsonQueryTree input = null;
 	JsonQueryTree left_input = null;

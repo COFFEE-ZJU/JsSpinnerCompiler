@@ -30,8 +30,6 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 
 	@Override public T visitJoinOut(JaqlSampleParser.JoinOutContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitTansformLabel(JaqlSampleParser.TansformLabelContext ctx) { return visitChildren(ctx); }
-
 	@Override public T visitWindowRowLabel(JaqlSampleParser.WindowRowLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitTimeUnit(JaqlSampleParser.TimeUnitContext ctx) { return visitChildren(ctx); }
@@ -50,11 +48,15 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 
 	@Override public T visitSetMaster(JaqlSampleParser.SetMasterContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitTransformLabel(JaqlSampleParser.TransformLabelContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitAggrFuncName(JaqlSampleParser.AggrFuncNameContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitCondSubLabel(JaqlSampleParser.CondSubLabelContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitTransExprVar(JaqlSampleParser.TransExprVarContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitCondOrLabel(JaqlSampleParser.CondOrLabelContext ctx) { return visitChildren(ctx); }
 

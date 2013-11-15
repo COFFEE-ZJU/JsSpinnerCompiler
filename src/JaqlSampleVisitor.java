@@ -29,8 +29,6 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitJoinOut(JaqlSampleParser.JoinOutContext ctx);
 
-	T visitTansformLabel(JaqlSampleParser.TansformLabelContext ctx);
-
 	T visitWindowRowLabel(JaqlSampleParser.WindowRowLabelContext ctx);
 
 	T visitTimeUnit(JaqlSampleParser.TimeUnitContext ctx);
@@ -49,11 +47,15 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitSetMaster(JaqlSampleParser.SetMasterContext ctx);
 
+	T visitTransformLabel(JaqlSampleParser.TransformLabelContext ctx);
+
 	T visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx);
 
 	T visitAggrFuncName(JaqlSampleParser.AggrFuncNameContext ctx);
 
 	T visitCondSubLabel(JaqlSampleParser.CondSubLabelContext ctx);
+
+	T visitTransExprVar(JaqlSampleParser.TransExprVarContext ctx);
 
 	T visitCondOrLabel(JaqlSampleParser.CondOrLabelContext ctx);
 
