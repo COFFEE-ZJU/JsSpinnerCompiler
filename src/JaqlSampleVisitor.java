@@ -49,6 +49,8 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitTransformLabel(JaqlSampleParser.TransformLabelContext ctx);
 
+	T visitTimeRange(JaqlSampleParser.TimeRangeContext ctx);
+
 	T visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx);
 
 	T visitAggrFuncName(JaqlSampleParser.AggrFuncNameContext ctx);

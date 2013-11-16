@@ -50,6 +50,8 @@ public class JaqlSampleBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 
 	@Override public T visitTransformLabel(JaqlSampleParser.TransformLabelContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitTimeRange(JaqlSampleParser.TimeRangeContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitAggrFuncName(JaqlSampleParser.AggrFuncNameContext ctx) { return visitChildren(ctx); }
