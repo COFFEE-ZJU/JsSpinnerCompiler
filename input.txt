@@ -1,10 +1,9 @@
+streamT = readFromWrapper ("Twitter") ;
+setMaster(streamT);
 
-testID = readFromWrapper ("each") ;
-setMaster(testID);
-view = testID->window [range unbounded];
-aaa = testID->window [range 1 seconds];
-join view,aaa where view.val == aaa.val2 into {bbb:view.aaa,view.val,xxx:aaa.bbb};
+deptCnt = streamT -> window [range now] -> group each ele by d = ele.dept into {department:d, avgSalary: avg($[*].salary)};
+emps = streamT->window [range 3 hours] -> filter $.salary*12>=1000000 or $.is_manager;
 
-aaa -> group each abc by xxx=abc.ddd as xx into {dsds:xxx, sum: sum(xx[*].vals), av: avg(xx[*].aver)};
+view3 = join deptCnt,emps where emps.dept == deptCnt.department into {emps.name, emps.salary, avgInDept:deptCnt.avgSalary};
 
-aaa -> transform each te {a:(te.as+te.ac/te.ds), te.ad, ren: te.sddd};
+view3 -> transform each emp {emp.name, emp.annualSalary, annualDiffFromAvg:emp.salary*12 - emp.avgInDept*12} -> istream;

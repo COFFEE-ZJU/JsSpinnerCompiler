@@ -49,7 +49,7 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 			cond.op = "eq";
 			break;
 
-		case "=>":
+		case ">=":
 			cond.op = "ge";
 			break;
 
@@ -65,8 +65,8 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 			break;
 		}
 		
-		cond.left_expreassion = new ExprVisitor().visit(ctx.exprs(0));
-		cond.right_expreassion = new ExprVisitor().visit(ctx.exprs(1));
+		cond.left_expression = new ExprVisitor().visit(ctx.exprs(0));
+		cond.right_expression = new ExprVisitor().visit(ctx.exprs(1));
 		
 		return cond; 
 	}
