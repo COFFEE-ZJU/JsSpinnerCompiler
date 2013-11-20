@@ -1,8 +1,10 @@
+import com.google.gson.annotations.Expose;
+
 
 public class JsonProjection {
-	Boolean need_rename = null;
-	String rename = null;
-	JsonExpression expression = null;		//if needRename == false, have to be leaf node;
+	@Expose Boolean need_rename = null;
+	@Expose String rename = null;
+	@Expose JsonExpression expression = null;		//if needRename == false, have to be leaf node;
 	
 	public JsonProjection(){}
 	

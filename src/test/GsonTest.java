@@ -2,13 +2,15 @@ package test;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 
 public class GsonTest {
 	
 	static class TestJsonType {
-		String name1;
-		int integ1;
-		TestJsonType nest = null;
+		@Expose String name1;
+		@Expose int integ1;
+		@Expose TestJsonType nest = null;
 		public TestJsonType(String name, int inte, TestJsonType ne){
 			name1 = name;
 			integ1 = inte;
@@ -19,8 +21,8 @@ public class GsonTest {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		TestJsonType tin = new TestJsonType("tin", 0, null);
-		TestJsonType tout = new TestJsonType("tout", 1, tin);
-		Gson gson = new Gson();
+		TestJsonType tout = new TestJsonType(null, 1, tin);
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		System.out.println(gson.toJson(tout));
 	}
 

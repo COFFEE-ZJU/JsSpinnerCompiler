@@ -1,10 +1,14 @@
+import com.google.gson.annotations.Expose;
+
 
 public class JsonExpression {
-	String type = null;		//id, int, bool, null, string, add, sub, div, mul;
-	JsonExpression left = null;
-	JsonExpression right = null;
-	String id_name = null;
-	String string_value = null;
-	Integer int_value = null;
-	Boolean bool_value = null;
+	@Expose String type = null;		//id, int, bool, null, string, add, sub, div, mul;
+	@Expose JsonExpression left = null;
+	@Expose JsonExpression right = null;
+	@Expose String id_name = null;
+	@Expose String string_value = null;
+	@Expose Integer int_value = null;
+	@Expose Boolean bool_value = null;
+	
+	Constants.JsonValueType retType = null;
 }

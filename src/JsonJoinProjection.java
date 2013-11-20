@@ -1,7 +1,9 @@
+import com.google.gson.annotations.Expose;
+
 
 public class JsonJoinProjection {
-	String attribute_source = null;		//left or right
-	String attribute_name = null;
-	Boolean need_rename = null;
-	String rename = null;
+	@Expose String attribute_source = null;		//left or right
+	@Expose String attribute_name = null;
+	@Expose Boolean need_rename = null;
+	@Expose String rename = null;
 }

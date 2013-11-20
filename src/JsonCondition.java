@@ -1,9 +1,11 @@
+import com.google.gson.annotations.Expose;
+
 
 public class JsonCondition {
-	String op = null;		//and, or, gt, ge, lt, le, eq, ne, bool
-	JsonCondition left_condition = null;
-	JsonCondition right_condition = null;
-	JsonExpression left_expression = null;
-	JsonExpression right_expression = null;
-	JsonExpression bool_expression = null;
+	@Expose String op = null;		//and, or, gt, ge, lt, le, eq, ne, bool
+	@Expose JsonCondition left_condition = null;
+	@Expose JsonCondition right_condition = null;
+	@Expose JsonExpression left_expression = null;
+	@Expose JsonExpression right_expression = null;
+	@Expose JsonExpression bool_expression = null;
 }
