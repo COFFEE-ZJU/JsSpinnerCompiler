@@ -11,6 +11,17 @@ public class JsonSchema {
 	}
 	
 	public static JsonSchema getSchema(String wrapperName){
-		return new JsonSchema();	//TODO
+		JsonSchema s = new JsonSchema();	//TODO
+		s.nameToType.put("dept", Constants.JsonValueType.STRING);
+		s.nameToType.put("salary", Constants.JsonValueType.INTEGER);
+		s.nameToType.put("is_manager", Constants.JsonValueType.BOOLEAN);
+		s.nameToType.put("name", Constants.JsonValueType.STRING);
+		
+		return s;
+	}
+	
+	@Override
+	public String toString(){
+		return nameToType.toString();
 	}
 }

@@ -6,4 +6,4 @@ emps = streamT->window [range 3 hours] -> filter $.salary*12>=1000000 or $.is_ma
 
 view3 = join deptCnt,emps where emps.dept == deptCnt.department into {emps.name, emps.salary, avgInDept:deptCnt.avgSalary};
 
-view3 -> transform each emp {emp.name, emp.annualSalary, annualDiffFromAvg:emp.salary*12 - emp.avgInDept*12} -> istream;
+view3 -> transform each emp {emp.name, emp.salary, annualDiffFromAvg:emp.salary*12 - emp.avgInDept*12} -> istream;
