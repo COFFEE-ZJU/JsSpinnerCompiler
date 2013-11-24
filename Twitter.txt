@@ -1,0 +1,26 @@
+{
+	"implement_class" : "TwitterStreamInput",
+	"class_argument":{
+		"user_name":"",	
+		"user_password":""
+	},
+
+	"information_source_schema":{
+		"id": "stream3",
+		"type":"object",
+		"properties": {
+			"dept":{
+				"type": "string"
+			},
+			"name":{
+				"type": "string"
+			},
+			"salary":{
+				"type": "integer"
+			},
+			"is_manager":{
+				"type": "boolean"
+			}
+		}
+	}
+}

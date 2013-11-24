@@ -1,5 +1,15 @@
 
 public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
+	private boolean haveRename;
+	private String renameId;
+	private JsonSchema prevSchema;
+	
+	public CondVisitor(boolean haveRename, String renameId, JsonSchema prevSchema){
+		this.haveRename = haveRename;
+		this.renameId = renameId;
+		this.prevSchema = prevSchema;
+	}
+	
 	@Override 
 	public JsonCondition visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
@@ -28,7 +38,7 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 	public JsonCondition visitCondVarLabel(JaqlSampleParser.CondVarLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
 		cond.op = "bool";
-		cond.bool_expression = new ExprVisitor().visit(ctx.var());
+		cond.bool_expression = new ExprVisitor(haveRename, renameId, prevSchema).visit(ctx.var());
 		if(cond.bool_expression.retType != Constants.JsonValueType.BOOLEAN)
 			throw new SemanticErrorException("attribute "+cond.bool_expression.id_name+" is not boolean type");
 		
@@ -69,8 +79,8 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 			break;
 		}
 
-		cond.left_expression = new ExprVisitor().visit(ctx.exprs(0));
-		cond.right_expression = new ExprVisitor().visit(ctx.exprs(1));
+		cond.left_expression = new ExprVisitor(haveRename, renameId, prevSchema).visit(ctx.exprs(0));
+		cond.right_expression = new ExprVisitor(haveRename, renameId, prevSchema).visit(ctx.exprs(1));
 		Constants.JsonValueType let = cond.left_expression.retType;
 		Constants.JsonValueType ret = cond.right_expression.retType;
 		

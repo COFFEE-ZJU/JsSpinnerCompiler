@@ -1,24 +1,34 @@
 
 
 public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
+	private boolean haveRename;
+	private String renameId;
+	private JsonSchema prevSchema;
+	
+	public ExprVisitor(boolean haveRename, String renameId, JsonSchema prevSchema){
+		this.haveRename = haveRename;
+		this.renameId = renameId;
+		this.prevSchema = prevSchema;
+	}
+	
 	@Override 
     public JsonExpression visitVar(JaqlSampleParser.VarContext ctx) { 
 		JsonExpression expr = new JsonExpression();
 		expr.type = "id";
 		if(ctx.identifier().size() == 2){
 			String rename = ctx.identifier(0).getText();
-			if(! TransVisitor.haveRename || ! rename.equals(TransVisitor.renameId))
+			if(! haveRename || ! rename.equals(renameId))
 				throw new SemanticErrorException("variable "+rename+" undefined");
 			
 			expr.id_name = ctx.identifier(1).getText();
 		}
 		else{
-			if(TransVisitor.haveRename)
+			if(haveRename)
 				throw new SemanticErrorException("variable $ undefined");
 			expr.id_name = ctx.identifier(0).getText();
 		}
-		TransVisitor.checkAttrContaining(TransVisitor.prevSchema, expr.id_name);
-		expr.retType = TransVisitor.prevSchema.nameToType.get(expr.id_name);
+		checkAttrContaining(prevSchema, expr.id_name);
+		expr.retType = prevSchema.nameToType.get(expr.id_name);
 		
 		return expr;
 	}
@@ -130,4 +140,9 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		
 		return visit(ctx.var()); 
 	}
+	
+	private void checkAttrContaining(JsonSchema schema, String attrName){
+    	if(! schema.nameToType.containsKey(attrName))
+    		throw new SemanticErrorException("attribute name "+attrName+" is not valid.");
+    }
 }
