@@ -20,16 +20,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Run {
 	private int threadNum = 0;
 	
 	public Run() throws IOException{
+		ExecutorService threadPool = Executors.newFixedThreadPool(Constants.THREAD_POOL_NUM);
 		ServerSocket ss = new ServerSocket(Constants.LISTEN_PORT);
     	Socket s;
     	while(true){
     		s = ss.accept();
-    		new InterpretThread(s,threadNum).start();
+    		threadPool.execute(new InterpretThread(s,threadNum));
     		synchronized ((Object)threadNum) {
     			System.out.println("query arrived, thread "+threadNum+" started");
 				threadNum ++;
@@ -37,7 +40,7 @@ public class Run {
     	}
 	}
     
-    class InterpretThread extends Thread{
+    class InterpretThread implements Runnable{
     	private Socket socket;
     	private int threadNo;
     	public InterpretThread(Socket s, int no){
@@ -45,7 +48,6 @@ public class Run {
     		threadNo = no;
     	}
     	
-    	@Override
     	public void run(){
     		try {
 				InputStream in = socket.getInputStream();

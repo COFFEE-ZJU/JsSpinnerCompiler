@@ -1,5 +1,6 @@
 
 public class Constants {
+	public static final int THREAD_POOL_NUM = 20;
 	public static final int INPUT_STREAM_LENGTH = 1024;
 	public static final int SEND_JSSPINNER_PORT = 2048;
 	public static final int LISTEN_PORT = 3000;
