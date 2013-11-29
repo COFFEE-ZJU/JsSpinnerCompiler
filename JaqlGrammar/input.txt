@@ -1,0 +1,13 @@
+testID = readFromWrapper ("each") ;
+view = testID->window[rows 100]-> filter (($.each+$.cc*$.day)>$.as and $.bool or ($.asd+$.qw*$.re)!=($.tt));
+view = testID->window[rows 100]-> filter each xx (xx.aa>($.bb+$.cc));
+view istream;
+
+view -> dstream;
+
+testID = readFromWrapper ("each") ;
+view = testID->window [range unbounded];
+aaa = testID->window [range 1 seconds];
+join view,aaa where view.val == aaa.val2 into {view.aaa,view.val,aaa.bbb};
+
+view -> group each ea by key = ea.dept as depts into {key,total:sum(depts[*].val),avg:avg(depts[*].val)};

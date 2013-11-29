@@ -1,4 +1,3 @@
-streamT = readFromWrapper ("Twitter") ;
-setMaster(streamT);
+streamT = readFromWrapper ("Twitter", false) ;
 
 streamT -> window [range now] -> group each ele by d = ele.dept into {department:d, avgSalary: avg($[*].salary)};
