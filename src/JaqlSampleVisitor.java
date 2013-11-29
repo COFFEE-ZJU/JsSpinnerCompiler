@@ -45,8 +45,6 @@ public interface JaqlSampleVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitComprator(JaqlSampleParser.CompratorContext ctx);
 
-	T visitSetMaster(JaqlSampleParser.SetMasterContext ctx);
-
 	T visitTransformLabel(JaqlSampleParser.TransformLabelContext ctx);
 
 	T visitTimeRange(JaqlSampleParser.TimeRangeContext ctx);
