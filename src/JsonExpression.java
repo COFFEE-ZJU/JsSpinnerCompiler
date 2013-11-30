@@ -13,4 +13,6 @@ public class JsonExpression {
 	@Expose Boolean bool_value = null;
 	
 	Constants.JsonValueType retType = null;
+	Constants.JsonValueType arrayDataType = null;
+	JsonSchema objectSchema = null;
 }

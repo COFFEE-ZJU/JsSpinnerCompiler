@@ -3,6 +3,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -33,7 +34,10 @@ public class JsonSchema {
 	public JsonSchema(){}
 	public JsonSchema(JsonSchema schema){
 		this.nameToType = new HashMap<String, Constants.JsonValueType>(schema.nameToType);
+		this.objectNameToSchema = new HashMap<String, JsonSchema>(schema.objectNameToSchema);
+		this.arrayNameToType = new HashMap<String, Constants.JsonValueType>(schema.arrayNameToType);
 	}
+	
 	
 	public static JsonSchema getSchema(String wrapperName){
 		JsonSchema s = new JsonSchema();	//TODO

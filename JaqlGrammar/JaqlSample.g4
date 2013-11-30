@@ -56,7 +56,7 @@ aggrExpr: (identifier ':')? identifier
         | (identifier ':' aggrFunc)
         ;
 
-aggrFunc: aggrFuncName '(' (identifier|'$') '[*].' identifier ')'
+aggrFunc: aggrFuncName '(' (identifier|dollar='$') '[*]' ('.' identifier)+ ')'
         ;
 aggrFuncName:'sum'|'avg'|'max'|'min'|'count';
 
