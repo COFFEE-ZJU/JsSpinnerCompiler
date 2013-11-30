@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Constants {
 	public static final int THREAD_POOL_NUM = 20;
@@ -7,6 +10,18 @@ public class Constants {
 	public static String JSSPINNER_HOST = "localhost";
 	
 	public static enum JsonValueType{ARRAY, BOOLEAN, INTEGER, NUMBER, NULL, OBJECT, STRING};
+	public static Map<String, JsonValueType> stringToJsonValueType = new HashMap<String, Constants.JsonValueType>(){
+		private static final long serialVersionUID = -3817390131714920532L;
+		{
+			put("array",JsonValueType.ARRAY);
+			put("boolean",JsonValueType.BOOLEAN);
+			put("integer",JsonValueType.INTEGER);
+			put("number",JsonValueType.NUMBER);
+			put("null",JsonValueType.NULL);
+			put("object",JsonValueType.OBJECT);
+			put("string",JsonValueType.STRING);
+		}
+	};
 	public static enum DataType {STREAM,RELATION};
 	public static enum OperationType {JOIN, FILTER, TRANS, GROUP, STREAM, WINDOW, NULL};
 	

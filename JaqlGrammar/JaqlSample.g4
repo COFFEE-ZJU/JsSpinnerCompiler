@@ -86,8 +86,8 @@ exprs: exprs op=('*'|'/') exprs                                                 
      ;
 
 
-var: (identifier | '$') ('.' identifier)?  ;
-varID: (identifier) ('.' identifier)?  ;
+var: (identifier | dollar='$') ('.' identifier)+  ;
+varID: (identifier) ('.' identifier)+  ;
 
 identifier: 'readFromWrapper' | 'readFromWrapperAsMaster' | 'join' | 'where' | 'into' | 'in' 
           | 'filter' | 'transform' | 'group' | 'window' | 'istream' | 'dstream' | 'rstream'

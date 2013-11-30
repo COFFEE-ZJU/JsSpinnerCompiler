@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.annotations.Expose;
 
 
@@ -8,19 +11,19 @@ public class JsonProjection {
 	
 	public JsonProjection(){}
 	
-	public JsonProjection(String idName) {	//simple projection, no rename
+	public JsonProjection(List<String> idNames) {	//simple projection, no rename
 		this.need_rename = false;
 		JsonExpression tmp = new JsonExpression();
 		tmp.type = "id";
-		tmp.id_name = idName;
+		tmp.id_name = idNames;
 		this.expression = tmp;
 	}
 	
-	public JsonProjection(String idName, String rename) {	//simple projection, with rename
+	public JsonProjection(List<String> idNames, String rename) {	//simple projection, with rename
 		this.need_rename = true;
 		JsonExpression tmp = new JsonExpression();
 		tmp.type = "id";
-		tmp.id_name = idName;
+		tmp.id_name = idNames;
 		this.expression = tmp;
 		this.rename = rename;
 	}

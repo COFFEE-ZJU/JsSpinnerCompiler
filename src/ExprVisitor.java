@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 
 public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	private boolean haveRename;
@@ -15,20 +15,36 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
     public JsonExpression visitVar(JaqlSampleParser.VarContext ctx) { 
 		JsonExpression expr = new JsonExpression();
 		expr.type = "id";
-		if(ctx.identifier().size() == 2){
+		if(ctx.dollar == null){
 			String rename = ctx.identifier(0).getText();
 			if(! haveRename || ! rename.equals(renameId))
 				throw new SemanticErrorException("variable "+rename+" undefined");
-			
-			expr.id_name = ctx.identifier(1).getText();
+			expr.id_name = new ArrayList<String>();
+			for(int i=0; i<ctx.identifier().size(); i++){
+				expr.id_name.add(ctx.identifier(i).getText());
+			}
 		}
 		else{
 			if(haveRename)
 				throw new SemanticErrorException("variable $ undefined");
-			expr.id_name = ctx.identifier(0).getText();
+			expr.id_name = new ArrayList<String>();
+			for(int i=0; i<ctx.identifier().size(); i++){
+				expr.id_name.add(ctx.identifier(i).getText());
+			}
 		}
-		checkAttrContaining(prevSchema, expr.id_name);
-		expr.retType = prevSchema.nameToType.get(expr.id_name);
+		JsonSchema tmpSch = prevSchema;
+		String tmpString;
+		int i;
+		for(i=0;i<expr.id_name.size()-1;i++){
+			tmpString = expr.id_name.get(i);
+			checkAttrContaining(tmpSch, tmpString);
+			if(tmpSch.nameToType.get(tmpString) != Constants.JsonValueType.OBJECT)
+				throw new SemanticErrorException("attribute "+tmpString+" is not an object type");
+			tmpSch = tmpSch.objectNameToSchema.get(tmpString);
+		}
+		tmpString = expr.id_name.get(i);
+		checkAttrContaining(tmpSch, tmpString);
+		expr.retType = tmpSch.nameToType.get(tmpString);
 		
 		return expr;
 	}

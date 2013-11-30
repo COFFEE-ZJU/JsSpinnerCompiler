@@ -20,7 +20,15 @@ public class JsonSchema {
 		}
 	}
 	
+	static class SchemaFormat{
+		String type;
+		Object properties;
+		SchemaFormat items;
+	}
+	
 	Map<String, Constants.JsonValueType> nameToType = new HashMap<String, Constants.JsonValueType>();
+	Map<String, JsonSchema> objectNameToSchema = new HashMap<String, JsonSchema>();
+	Map<String, Constants.JsonValueType> arrayNameToType = new HashMap<String, Constants.JsonValueType>();
 	
 	public JsonSchema(){}
 	public JsonSchema(JsonSchema schema){
@@ -34,7 +42,7 @@ public class JsonSchema {
 //		s.nameToType.put("is_manager", Constants.JsonValueType.BOOLEAN);
 //		s.nameToType.put("name", Constants.JsonValueType.STRING);
 		
-		Object o;
+		SchemaFormat sf;
 		JsonSchemaQuery query = new JsonSchemaQuery(wrapperName);
 		try {
 			Socket socket = new Socket(Constants.JSSPINNER_HOST, Constants.SEND_JSSPINNER_PORT);
@@ -51,65 +59,80 @@ public class JsonSchema {
 			int len = in.read(resB);
 			String jsonString = new String(resB,0,len);
 			socket.close();
-			o = new Gson().fromJson(jsonString, Object.class);
+			sf = new Gson().fromJson(jsonString, SchemaFormat.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new SemanticErrorException("schema for "+wrapperName+" not found");
 		}
 		
+		//System.out.println(parseSchema(sf.properties));
+		return parseSchema(sf.properties);
+	}
+	
+	private static JsonSchema parseSchema(Object o){
+		
+		JsonSchema s = new JsonSchema();
+//		o = map.get("information_source_schema");
+//		map = (Map<String, Object>)o;
+//		Object o = sf.properties;
 		Map<String, Object> map = (Map<String, Object>)o;
-		o = map.get("information_source_schema");
-		map = (Map<String, Object>)o;
-		o = map.get("properties");
-		map = (Map<String, Object>)o;
 		
 		Iterator<Entry<String, Object> > it = map.entrySet().iterator();
 		Entry<String, Object> ent;
 		Map<String, String> sMap;
+		SchemaFormat sf;
 		while(it.hasNext()){
 			ent = it.next();
 			//System.out.println(ent.getKey());
-			sMap = (Map<String, String>)ent.getValue();
-			
-			switch (sMap.get("type")) {
-			case "integer":
-				s.nameToType.put(ent.getKey(), Constants.JsonValueType.INTEGER);
-				break;
-				
-			case "number":
-				s.nameToType.put(ent.getKey(), Constants.JsonValueType.NUMBER);
-				break;
-				
-			case "null":
-				s.nameToType.put(ent.getKey(), Constants.JsonValueType.NULL);
-				break;
-				
-			case "string":
-				s.nameToType.put(ent.getKey(), Constants.JsonValueType.STRING);
-				break;
-				
-			case "object":
-				s.nameToType.put(ent.getKey(), Constants.JsonValueType.OBJECT);
-				break;
-				
-			case "boolean":
-				s.nameToType.put(ent.getKey(), Constants.JsonValueType.BOOLEAN);
-				break;
-				
-			case "array":
-				s.nameToType.put(ent.getKey(), Constants.JsonValueType.ARRAY);
-				break;
-				
-			default:
-				throw new SemanticErrorException("error type in schema file");
+			sf = toSchemaFormat(ent.getValue());
+			Constants.JsonValueType type = Constants.stringToJsonValueType.get(sf.type);
+			s.nameToType.put(ent.getKey(), type);
+			if(type == Constants.JsonValueType.OBJECT) s.objectNameToSchema.put(ent.getKey(), parseSchema(sf.properties));
+			else if(type == Constants.JsonValueType.ARRAY){
+				SchemaFormat sf2 = (SchemaFormat)sf.items;
+				Constants.JsonValueType type2 = Constants.stringToJsonValueType.get(sf2.type);
+				s.arrayNameToType.put(ent.getKey(), type2);
+				if(type2 == Constants.JsonValueType.OBJECT) s.objectNameToSchema.put(ent.getKey(), parseSchema(sf2.properties));
+				else if(type2 == Constants.JsonValueType.ARRAY) throw new SemanticErrorException("array of array not supported yet");	//TODO
 			}
 		}
 		
 		return s;
 	}
 	
+	private static SchemaFormat toSchemaFormat(Object o){
+		Map<String, Object> map = (Map<String, Object>)o;
+		SchemaFormat sf = new SchemaFormat();
+		Iterator<Entry<String, Object> > it = map.entrySet().iterator();
+		Entry<String, Object> ent;
+		while(it.hasNext()){
+			ent = it.next();
+			switch (ent.getKey()) {
+			case "type":
+				sf.type = (String)ent.getValue();
+				break;
+				
+			case "properties":
+				sf.properties = ent.getValue();
+				break;
+				
+			case "items":
+				sf.items = toSchemaFormat(ent.getValue());
+				break;
+
+			default:
+				break;
+			}
+		}
+		
+		return sf;
+	}
+	
 	@Override
 	public String toString(){
-		return nameToType.toString();
+		String s1 = "nameToType" + nameToType.toString() + "\n";
+		String s2 = "arrayNameToType" + arrayNameToType.toString() + "\n";
+		String s3 = "objectNameToSchema" + objectNameToSchema.toString() + "\n";
+		return s1+s2+s3;
 	}
 }
