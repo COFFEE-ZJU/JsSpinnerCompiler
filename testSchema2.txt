@@ -1,0 +1,21 @@
+{
+	"id": "testSchema",
+	"type":"array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"tags": {
+				"type": "array",
+				"items":{
+					"type": "array",
+					"items": {
+						"type": "integer"
+					}
+				}
+			},
+			"a_string": {
+				"type": "string"
+			}
+		}
+	}
+}

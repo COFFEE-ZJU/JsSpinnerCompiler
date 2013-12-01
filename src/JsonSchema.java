@@ -22,20 +22,31 @@ public class JsonSchema {
 	}
 	
 	static class SchemaFormat{
-		String type;
+		Constants.JsonValueType type;
 		Object properties;
 		SchemaFormat items;
 	}
 	
-	Map<String, Constants.JsonValueType> nameToType = new HashMap<String, Constants.JsonValueType>();
-	Map<String, JsonSchema> objectNameToSchema = new HashMap<String, JsonSchema>();
-	Map<String, Constants.JsonValueType> arrayNameToType = new HashMap<String, Constants.JsonValueType>();
+	Constants.JsonValueType type = null; 	//can be any type
+	JsonSchema items = null;				//for array type only
+	Map<String, JsonSchema> nameToSchema = new HashMap<String, JsonSchema>();	//for object type only
+	
+//	Map<String, Constants.JsonValueType> nameToType = new HashMap<String, Constants.JsonValueType>();
+//	Map<String, JsonSchema> objectNameToSchema = new HashMap<String, JsonSchema>();
+//	Map<String, Constants.JsonValueType> arrayNameToType = new HashMap<String, Constants.JsonValueType>();
 	
 	public JsonSchema(){}
+	public JsonSchema(Constants.JsonValueType type){
+		this.type = type;
+	}
 	public JsonSchema(JsonSchema schema){
-		this.nameToType = new HashMap<String, Constants.JsonValueType>(schema.nameToType);
-		this.objectNameToSchema = new HashMap<String, JsonSchema>(schema.objectNameToSchema);
-		this.arrayNameToType = new HashMap<String, Constants.JsonValueType>(schema.arrayNameToType);
+		this.type = schema.type;
+		this.nameToSchema = new HashMap<String, JsonSchema>(schema.nameToSchema);
+		if(schema.items != null) this.items = new JsonSchema(schema.items);
+		
+//		this.nameToType = new HashMap<String, Constants.JsonValueType>(schema.nameToType);
+//		this.objectNameToSchema = new HashMap<String, JsonSchema>(schema.objectNameToSchema);
+//		this.arrayNameToType = new HashMap<String, Constants.JsonValueType>(schema.arrayNameToType);
 	}
 	
 	
@@ -46,7 +57,7 @@ public class JsonSchema {
 //		s.nameToType.put("is_manager", Constants.JsonValueType.BOOLEAN);
 //		s.nameToType.put("name", Constants.JsonValueType.STRING);
 		
-		SchemaFormat sf;
+		Object o;
 		JsonSchemaQuery query = new JsonSchemaQuery(wrapperName);
 		try {
 			Socket socket = new Socket(Constants.JSSPINNER_HOST, Constants.SEND_JSSPINNER_PORT);
@@ -63,45 +74,43 @@ public class JsonSchema {
 			int len = in.read(resB);
 			String jsonString = new String(resB,0,len);
 			socket.close();
-			sf = new Gson().fromJson(jsonString, SchemaFormat.class);
+			o = new Gson().fromJson(jsonString, Object.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new SemanticErrorException("schema for "+wrapperName+" not found");
 		}
 		
-		//System.out.println(parseSchema(sf.properties));
-		return parseSchema(sf.properties);
+		System.out.println(parseSchema(toSchemaFormat(o)));
+		return parseSchema(toSchemaFormat(o));
 	}
 	
-	private static JsonSchema parseSchema(Object o){
-		
-		JsonSchema s = new JsonSchema();
-//		o = map.get("information_source_schema");
-//		map = (Map<String, Object>)o;
-//		Object o = sf.properties;
-		Map<String, Object> map = (Map<String, Object>)o;
-		
-		Iterator<Entry<String, Object> > it = map.entrySet().iterator();
-		Entry<String, Object> ent;
-		Map<String, String> sMap;
-		SchemaFormat sf;
-		while(it.hasNext()){
-			ent = it.next();
-			//System.out.println(ent.getKey());
-			sf = toSchemaFormat(ent.getValue());
-			Constants.JsonValueType type = Constants.stringToJsonValueType.get(sf.type);
-			s.nameToType.put(ent.getKey(), type);
-			if(type == Constants.JsonValueType.OBJECT) s.objectNameToSchema.put(ent.getKey(), parseSchema(sf.properties));
-			else if(type == Constants.JsonValueType.ARRAY){
-				SchemaFormat sf2 = (SchemaFormat)sf.items;
-				Constants.JsonValueType type2 = Constants.stringToJsonValueType.get(sf2.type);
-				s.arrayNameToType.put(ent.getKey(), type2);
-				if(type2 == Constants.JsonValueType.OBJECT) s.objectNameToSchema.put(ent.getKey(), parseSchema(sf2.properties));
-				else if(type2 == Constants.JsonValueType.ARRAY) throw new SemanticErrorException("array of array not supported yet");	//TODO
+	private static JsonSchema parseSchema(SchemaFormat sf){
+		JsonSchema js = new JsonSchema();
+		js.type = sf.type;
+		if(sf.type == Constants.JsonValueType.ARRAY){
+			js.items = parseSchema(sf.items);
+		}
+		else if(sf.type == Constants.JsonValueType.OBJECT){
+			Map<String, Object> map = (Map<String, Object>)sf.properties;
+			Iterator<Entry<String, Object> > it = map.entrySet().iterator();
+			Entry<String, Object> ent;
+			SchemaFormat tempsf;
+			while(it.hasNext()){
+				ent = it.next();
+				//System.out.println(ent.getKey());
+				tempsf = toSchemaFormat(ent.getValue());
+				js.nameToSchema.put(ent.getKey(), parseSchema(tempsf));
+//				if(type == Constants.JsonValueType.OBJECT) s.objectNameToSchema.put(ent.getKey(), parseSchema(sf.properties));
+//				else if(type == Constants.JsonValueType.ARRAY){
+//					SchemaFormat sf2 = (SchemaFormat)sf.items;
+//					Constants.JsonValueType type2 = Constants.stringToJsonValueType.get(sf2.type);
+//					s.arrayNameToType.put(ent.getKey(), type2);
+//					if(type2 == Constants.JsonValueType.OBJECT) s.objectNameToSchema.put(ent.getKey(), parseSchema(sf2.properties));
+//					else if(type2 == Constants.JsonValueType.ARRAY) throw new SemanticErrorException("array of array not supported yet");	//TODO
+//				}
 			}
 		}
-		
-		return s;
+		return js;
 	}
 	
 	private static SchemaFormat toSchemaFormat(Object o){
@@ -113,7 +122,7 @@ public class JsonSchema {
 			ent = it.next();
 			switch (ent.getKey()) {
 			case "type":
-				sf.type = (String)ent.getValue();
+				sf.type = Constants.stringToJsonValueType.get((String)ent.getValue());
 				break;
 				
 			case "properties":
@@ -134,9 +143,31 @@ public class JsonSchema {
 	
 	@Override
 	public String toString(){
-		String s1 = "nameToType" + nameToType.toString() + "\n";
-		String s2 = "arrayNameToType" + arrayNameToType.toString() + "\n";
-		String s3 = "objectNameToSchema" + objectNameToSchema.toString() + "\n";
-		return s1+s2+s3;
+		return new Gson().toJson(this);
+	}
+	
+	public boolean equals(JsonSchema schema){
+		if((this.type == Constants.JsonValueType.INTEGER || this.type == Constants.JsonValueType.NUMBER) &&
+			(schema.type == Constants.JsonValueType.INTEGER || schema.type == Constants.JsonValueType.NUMBER))
+			return true;
+		
+		if(this.type != schema.type) return false;
+		
+		if(this.type == Constants.JsonValueType.ARRAY) return this.items.equals(schema.items);
+		
+		if(this.type == Constants.JsonValueType.OBJECT){
+			if(this.nameToSchema.size() != schema.nameToSchema.size()) return false;
+			Entry<String, JsonSchema> ent;
+			Iterator<Entry<String, JsonSchema> > it = this.nameToSchema.entrySet().iterator();
+			while(it.hasNext()){
+				ent = it.next();
+				if(! schema.nameToSchema.containsKey(ent.getKey())) return false;
+				if(! ent.getValue().equals(schema.nameToSchema.get(ent.getKey()))) return false;
+			}
+			
+			return true;
+		}
+		
+		return true;
 	}
 }

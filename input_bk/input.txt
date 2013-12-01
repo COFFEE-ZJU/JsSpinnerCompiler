@@ -1,4 +1,4 @@
-streamT = readFromWrapper ("testSchema", true) ;
+streamT = readFromWrapper ("Twitter", true) ;
 
 deptCnt = streamT -> window [range now] -> group each ele by d = ele.dept into {department:d, avgSalary: avg($[*].salary)};
 emps = streamT->window [range 3 hours] -> filter $.salary*12>=1000000 or $.is_manager;

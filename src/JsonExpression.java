@@ -12,7 +12,9 @@ public class JsonExpression {
 	@Expose Integer int_value = null;
 	@Expose Boolean bool_value = null;
 	
-	Constants.JsonValueType retType = null;
-	Constants.JsonValueType arrayDataType = null;
-	JsonSchema objectSchema = null;
+	JsonSchema retSchema = new JsonSchema();
+	
+//	Constants.JsonValueType retType = null;
+//	Constants.JsonValueType arrayDataType = null;
+//	JsonSchema objectSchema = null;
 }

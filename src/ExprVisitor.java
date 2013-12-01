@@ -38,20 +38,13 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		for(i=0;i<expr.id_name.size()-1;i++){
 			tmpString = expr.id_name.get(i);
 			checkAttrContaining(tmpSch, tmpString);
-			if(tmpSch.nameToType.get(tmpString) != Constants.JsonValueType.OBJECT)
+			if(tmpSch.nameToSchema.get(tmpString).type != Constants.JsonValueType.OBJECT)
 				throw new SemanticErrorException("attribute "+tmpString+" is not an object type");
-			tmpSch = tmpSch.objectNameToSchema.get(tmpString);
+			tmpSch = tmpSch.nameToSchema.get(tmpString);
 		}
 		tmpString = expr.id_name.get(i);
 		checkAttrContaining(tmpSch, tmpString);
-		expr.retType = tmpSch.nameToType.get(tmpString);
-		if(expr.retType == Constants.JsonValueType.ARRAY){
-			expr.arrayDataType = tmpSch.arrayNameToType.get(tmpString);
-			if(expr.arrayDataType == Constants.JsonValueType.OBJECT)
-				expr.objectSchema = tmpSch.objectNameToSchema.get(tmpString);
-		}
-		if(expr.retType == Constants.JsonValueType.OBJECT)
-			expr.objectSchema = tmpSch.objectNameToSchema.get(tmpString);
+		expr.retSchema = tmpSch.nameToSchema.get(tmpString);
 		
 		return expr;
 	}
@@ -74,20 +67,20 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		for(i=0;i<expr.id_name.size()-1;i++){
 			tmpString = expr.id_name.get(i);
 			checkAttrContaining(tmpSch, tmpString);
-			if(tmpSch.nameToType.get(tmpString) != Constants.JsonValueType.OBJECT)
+			if(tmpSch.nameToSchema.get(tmpString).type != Constants.JsonValueType.OBJECT)
 				throw new SemanticErrorException("attribute "+tmpString+" is not an object type");
-			tmpSch = tmpSch.objectNameToSchema.get(tmpString);
+			tmpSch = tmpSch.nameToSchema.get(tmpString);
 		}
 		tmpString = expr.id_name.get(i);
 		checkAttrContaining(tmpSch, tmpString);
-		expr.retType = tmpSch.nameToType.get(tmpString);
-		if(expr.retType == Constants.JsonValueType.ARRAY){
-			expr.arrayDataType = tmpSch.arrayNameToType.get(tmpString);
-			if(expr.arrayDataType == Constants.JsonValueType.OBJECT)
-				expr.objectSchema = tmpSch.objectNameToSchema.get(tmpString);
-		}
-		if(expr.retType == Constants.JsonValueType.OBJECT)
-			expr.objectSchema = tmpSch.objectNameToSchema.get(tmpString);
+		expr.retSchema = tmpSch.nameToSchema.get(tmpString);
+//		if(expr.retType == Constants.JsonValueType.ARRAY){
+//			expr.arrayDataType = tmpSch.arrayNameToType.get(tmpString);
+//			if(expr.arrayDataType == Constants.JsonValueType.OBJECT)
+//				expr.objectSchema = tmpSch.objectNameToSchema.get(tmpString);
+//		}
+//		if(expr.retType == Constants.JsonValueType.OBJECT)
+//			expr.objectSchema = tmpSch.objectNameToSchema.get(tmpString);
 		
 		return expr;
 	}
@@ -108,14 +101,14 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		expr.left = visit(ctx.exprs(0));
 		expr.right = visit(ctx.exprs(1));
 		
-		if((expr.left.retType != Constants.JsonValueType.INTEGER && expr.left.retType != Constants.JsonValueType.NUMBER) ||
-				(expr.right.retType != Constants.JsonValueType.INTEGER && expr.right.retType != Constants.JsonValueType.NUMBER))
+		if((expr.left.retSchema.type != Constants.JsonValueType.INTEGER && expr.left.retSchema.type != Constants.JsonValueType.NUMBER) ||
+				(expr.right.retSchema.type != Constants.JsonValueType.INTEGER && expr.right.retSchema.type != Constants.JsonValueType.NUMBER))
 			throw new SemanticErrorException("unsupported type for multiply/divide");
 			
-		if(expr.left.retType == Constants.JsonValueType.INTEGER && expr.right.retType == Constants.JsonValueType.INTEGER)
-			expr.retType = Constants.JsonValueType.INTEGER;
+		if(expr.left.retSchema.type == Constants.JsonValueType.INTEGER && expr.right.retSchema.type == Constants.JsonValueType.INTEGER)
+			expr.retSchema.type = Constants.JsonValueType.INTEGER;
 		else
-			expr.retType = Constants.JsonValueType.NUMBER;
+			expr.retSchema.type = Constants.JsonValueType.NUMBER;
 		
 		return expr; 
 	}
@@ -136,14 +129,14 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		expr.left = visit(ctx.exprs(0));
 		expr.right = visit(ctx.exprs(1));
 		
-		if((expr.left.retType != Constants.JsonValueType.INTEGER && expr.left.retType != Constants.JsonValueType.NUMBER) ||
-				(expr.right.retType != Constants.JsonValueType.INTEGER && expr.right.retType != Constants.JsonValueType.NUMBER))
+		if((expr.left.retSchema.type != Constants.JsonValueType.INTEGER && expr.left.retSchema.type != Constants.JsonValueType.NUMBER) ||
+				(expr.right.retSchema.type != Constants.JsonValueType.INTEGER && expr.right.retSchema.type != Constants.JsonValueType.NUMBER))
 			throw new SemanticErrorException("unsupported type for multiply/divide");
 		
-		if(expr.left.retType == Constants.JsonValueType.INTEGER && expr.right.retType == Constants.JsonValueType.INTEGER)
-			expr.retType = Constants.JsonValueType.INTEGER;
+		if(expr.left.retSchema.type == Constants.JsonValueType.INTEGER && expr.right.retSchema.type == Constants.JsonValueType.INTEGER)
+			expr.retSchema.type = Constants.JsonValueType.INTEGER;
 		else
-			expr.retType = Constants.JsonValueType.NUMBER;
+			expr.retSchema.type = Constants.JsonValueType.NUMBER;
 		
 		return expr; 
 	}
@@ -153,7 +146,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "int";
 		expr.int_value = Integer.parseInt(ctx.INT().getText());
-		expr.retType = Constants.JsonValueType.INTEGER;
+		expr.retSchema.type = Constants.JsonValueType.INTEGER;
 		
 		return expr; 
 	}
@@ -165,7 +158,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		if(ctx.TRUE() != null) expr.bool_value = true;
 		else expr.bool_value = false;
 		
-		expr.retType = Constants.JsonValueType.BOOLEAN;
+		expr.retSchema.type = Constants.JsonValueType.BOOLEAN;
 		
 		return expr;
 	}
@@ -174,7 +167,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	public JsonExpression visitExprNullLabel(JaqlSampleParser.ExprNullLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "null";
-		expr.retType = Constants.JsonValueType.NULL;
+		expr.retSchema.type = Constants.JsonValueType.NULL;
 		
 		return expr; 
 	}
@@ -184,7 +177,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "string";
 		expr.string_value = ctx.STRING().getText().replaceAll("\"", "");
-		expr.retType = Constants.JsonValueType.STRING;
+		expr.retSchema.type = Constants.JsonValueType.STRING;
 		return expr; 
 	}
 	
@@ -201,7 +194,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	private void checkAttrContaining(JsonSchema schema, String attrName){
-    	if(! schema.nameToType.containsKey(attrName))
+    	if(! schema.nameToSchema.containsKey(attrName))
     		throw new SemanticErrorException("attribute name "+attrName+" is not valid.");
     }
 }

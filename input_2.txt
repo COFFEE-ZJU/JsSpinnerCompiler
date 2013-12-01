@@ -1,4 +1,3 @@
-streamT = readFromWrapper ("Twitter", false) ;
+streamT = readFromWrapper ("testSchema2", false) ;
 
-temp = streamT -> window [range now] -> transform {aSalary : $.salary * 12, $.another_object.a_string, $.another_object.tags};
-temp -> group each ele by d = ele.tags into {department:d, avgSalary: count($[*].a_string)};
+streamT;

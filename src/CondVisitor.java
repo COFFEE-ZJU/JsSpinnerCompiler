@@ -39,7 +39,7 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 		JsonCondition cond = new JsonCondition();
 		cond.op = "bool";
 		cond.bool_expression = new ExprVisitor(haveRename, renameId, prevSchema).visit(ctx.var());
-		if(cond.bool_expression.retType != Constants.JsonValueType.BOOLEAN)
+		if(cond.bool_expression.retSchema.type != Constants.JsonValueType.BOOLEAN)
 			throw new SemanticErrorException("attribute "+cond.bool_expression.id_name+" is not boolean type");
 		
 		return cond; 
@@ -81,8 +81,8 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 
 		cond.left_expression = new ExprVisitor(haveRename, renameId, prevSchema).visit(ctx.exprs(0));
 		cond.right_expression = new ExprVisitor(haveRename, renameId, prevSchema).visit(ctx.exprs(1));
-		Constants.JsonValueType let = cond.left_expression.retType;
-		Constants.JsonValueType ret = cond.right_expression.retType;
+		Constants.JsonValueType let = cond.left_expression.retSchema.type;
+		Constants.JsonValueType ret = cond.right_expression.retSchema.type;
 		
 		if((let != Constants.JsonValueType.INTEGER && let != Constants.JsonValueType.NUMBER)
 				|| (ret != Constants.JsonValueType.INTEGER && ret != Constants.JsonValueType.NUMBER)){
@@ -90,7 +90,9 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 			switch (cond.op) {
 			case "eq":
 			case "ne":
-				if(let != ret && let != Constants.JsonValueType.NULL && ret != Constants.JsonValueType.NULL)
+				if(let == Constants.JsonValueType.NULL || ret == Constants.JsonValueType.NULL) break;
+				
+				if(! cond.left_expression.retSchema.equals(cond.right_expression.retSchema))
 					throw new SemanticErrorException("comparision type mismatch");
 				break;
 			case "lt":
