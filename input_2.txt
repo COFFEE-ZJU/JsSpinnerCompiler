@@ -1,3 +1,4 @@
 streamT = readFromWrapper ("Twitter", false) ;
 
-streamT -> window [range now] -> group each ele by d = ele.dept into {department:d, avgSalary: avg($[*].salary)};
+temp = streamT -> window [range now] -> transform {aSalary : $.salary * 12, $.another_object.a_string, $.another_object.tags};
+temp -> group each ele by d = ele.tags into {department:d, avgSalary: count($[*].a_string)};

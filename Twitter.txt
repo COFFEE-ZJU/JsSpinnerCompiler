@@ -14,14 +14,14 @@
 		"is_manager":{
 			"type": "boolean"
 		},
-		"another_array": {
-			"type": "array",
-			"items": {
-				"type": "object",
-				"properties": {
-					"tags": {
-						"type": "string"
-					}
+		"another_object": {
+			"type": "object",
+			"properties": {
+				"tags": {
+					"type": "integer"
+				},
+				"a_string": {
+					"type": "string"
 				}
 			}
 		}

@@ -21,4 +21,6 @@ public class JsonQueryTree {
 	@Expose JsonQueryTree input = null;
 	@Expose JsonQueryTree left_input = null;
 	@Expose JsonQueryTree right_input = null;
+	
+	@Expose String error_message = null;
 }
