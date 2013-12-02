@@ -1,0 +1,57 @@
+compratorType: leaf
+left:
+right:
+
+
+a = [
+	{name: [1,2,3]},
+	{name: [2,3,4]},
+	{name: [3,4,5]}
+];
+
+a -> transform {max: ($ -> top 1 by [$ desc])[0]};
+
+b = [
+	{aa:2,bb:1,cc:{dd:2,ee:3,ff:6}},
+	{aa:2,bb:2,cc:{dd:4,ee:3,ff:6}},
+	{aa:3,bb:1,cc:{dd:3,ee:3,ff:6}}
+];
+
+c = [
+	{aa:1,dd:1},
+	{aa:2,dd:2},
+	{aa:3,dd:1}
+];
+
+join b,c where b.cc.dd == c.aa into {b.*,c.dd};
+b-> group by x = $.cc.ee into {x, s:sum($[*].cc.dd)};
+b-> group by x = $.cc into {x, s:sum($[*].cc.dd)};
+
+
+b -> transform {sum:$.aa+$.bb,xx:$.cc};
+
+b -> group by a = $.aa into {ax:a, mini:min($[*].bb), avg:avg($[*].cc)};
+
+b -> group by ccc = $.cc.dd into {ccc, s:sum($[*].aa)};
+
+
+ss = readFromStream("Twitter");
+a = ss->window[range now];
+b=a;
+join b,c where b.aa == c.dd into {b.aa,b.cc,xxx:c.aa};
+
+
+{"type":"projection","input":{"type":"join","left_input":{"type":"rangewindow","input":{"type":"leaf","stream_source":"each"},"windowsize":"unbounded"},"right_input":{"type":"rangewindow","input":{"type":"leaf","stream_source":"each"},"windowsize":"1 seconds"},"left_join_attribute":"val","right_join_attribute":"val2"},"projection_attibute_set":["aaa","val","bbb"]}
+
+join bbb in b,c where bbb.aa == c.aa and bbb.aa == c.dd into {bbb.aa,bbb.bb,c.dd};
+
+a -> group into {aaa:min($)};
+
+employees -> group by d = $.dept 
+                   into {total: sum($[*].income), d};
+
+b -> top 2 by [ $.aa asc, $.bb desc ];
+
+b -> transform {$.aa,$.bb};
+
+recs -> transform {'123': $.a + $.b};

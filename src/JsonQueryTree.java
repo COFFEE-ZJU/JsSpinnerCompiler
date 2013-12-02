@@ -6,12 +6,12 @@ public class JsonQueryTree {
 	@Expose String type = null;
 	
 	@Expose JsonCondition selection_condition = null;
-	@Expose List<String> left_join_attribute = null;
-	@Expose List<String> right_join_attribute = null;
-	@Expose String windowsize = null;
+	@Expose List<Object> left_join_attribute = null;
+	@Expose List<Object> right_join_attribute = null;
+	@Expose Object windowsize = null;
 	@Expose String stream_source = null;
-	@Expose List<String> groupby_attribute_names = null;
-	@Expose List<String> aggregation_attribute_name = null;
+	@Expose List<Object> groupby_attribute_name = null;
+	@Expose List<Object> aggregation_attribute_name = null;
 	@Expose String result_attribute_name = null;
 	@Expose String aggregate_operation = null;
 	@Expose Boolean is_master = null;

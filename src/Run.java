@@ -56,9 +56,9 @@ public class Run {
 				int len = in.read(b);
 				
 				ANTLRInputStream input = new ANTLRInputStream(new String(b,0,len));
-		        JaqlSampleLexer lexer = new JaqlSampleLexer(input);
+		        JaqlGrammarLexer lexer = new JaqlGrammarLexer(input);
 		        CommonTokenStream tokens = new CommonTokenStream(lexer);
-		        JaqlSampleParser parser = new JaqlSampleParser(tokens);
+		        JaqlGrammarParser parser = new JaqlGrammarParser(tokens);
 		        ParseTree tree = parser.prog(); // parse
 
 		        TransVisitor eval = new TransVisitor();

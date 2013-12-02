@@ -1,5 +1,5 @@
 
-public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
+public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	private boolean haveRename;
 	private String renameId;
 	private JsonSchema prevSchema;
@@ -11,7 +11,7 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 	}
 	
 	@Override 
-	public JsonCondition visitCondAndLabel(JaqlSampleParser.CondAndLabelContext ctx) { 
+	public JsonCondition visitCondAndLabel(JaqlGrammarParser.CondAndLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
 		cond.op = "and";
 		cond.left_condition = visit(ctx.conditions(0));
@@ -20,7 +20,7 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 	}
 	
 	@Override 
-	public JsonCondition visitCondOrLabel(JaqlSampleParser.CondOrLabelContext ctx) { 
+	public JsonCondition visitCondOrLabel(JaqlGrammarParser.CondOrLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
 		cond.op = "or";
 		cond.left_condition = visit(ctx.conditions(0));
@@ -29,13 +29,13 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 	}
 	
 	@Override 
-	public JsonCondition visitCondSubLabel(JaqlSampleParser.CondSubLabelContext ctx) { 
+	public JsonCondition visitCondSubLabel(JaqlGrammarParser.CondSubLabelContext ctx) { 
 		
 		return visit(ctx.conditions()); 
 	}
 	
 	@Override 
-	public JsonCondition visitCondVarLabel(JaqlSampleParser.CondVarLabelContext ctx) { 
+	public JsonCondition visitCondVarLabel(JaqlGrammarParser.CondVarLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
 		cond.op = "bool";
 		cond.bool_expression = new ExprVisitor(haveRename, renameId, prevSchema).visit(ctx.var());
@@ -46,7 +46,7 @@ public class CondVisitor extends JaqlSampleBaseVisitor<JsonCondition> {
 	}
 	
 	@Override 
-	public JsonCondition visitCondCompLabel(JaqlSampleParser.CondCompLabelContext ctx) { 
+	public JsonCondition visitCondCompLabel(JaqlGrammarParser.CondCompLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
 		
 		String comp = ctx.comprator().getText();

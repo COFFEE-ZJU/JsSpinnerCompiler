@@ -1,4 +1,4 @@
-grammar JaqlSample;
+grammar JaqlGrammar;
 
 prog: stat+ ;
 
@@ -52,11 +52,11 @@ timeUnit: ('seconds' | 'minutes' | 'hours' | 'days');
 aggrExprs: '{' aggrExpr (',' aggrExpr )* '}'
         ;
 
-aggrExpr: (identifier ':')? identifier
+aggrExpr: (identifier ':')? varID
         | (identifier ':' aggrFunc)
         ;
 
-aggrFunc: aggrFuncName '(' (identifier|dollar='$') '[*]' ('.' identifier)+ ')'
+aggrFunc: aggrFuncName '(' var ')'
         ;
 aggrFuncName:'sum'|'avg'|'max'|'min'|'count';
 
@@ -86,8 +86,12 @@ exprs: exprs op=('*'|'/') exprs                                                 
      ;
 
 
-var: (identifier | dollar='$') ('.' identifier)+  ;
-varID: (identifier) ('.' identifier)+  ;
+var: (identifier | dollar='$') arraySymbol* ('.' idWithArray)+  ;
+varID: (idWithArray) ('.' idWithArray)+  ;
+
+idWithArray: identifier arraySymbol*;
+
+arraySymbol: ('[' (INT | star='*') ']') ;
 
 identifier: 'readFromWrapper' | 'readFromWrapperAsMaster' | 'join' | 'where' | 'into' | 'in' 
           | 'filter' | 'transform' | 'group' | 'window' | 'istream' | 'dstream' | 'rstream'

@@ -11,7 +11,7 @@ public class JsonProjection {
 	
 	public JsonProjection(){}
 	
-	public JsonProjection(List<String> idNames) {	//simple projection, no rename
+	public JsonProjection(List<Object> idNames) {	//simple projection, no rename
 		this.need_rename = false;
 		JsonExpression tmp = new JsonExpression();
 		tmp.type = "id";
@@ -19,7 +19,7 @@ public class JsonProjection {
 		this.expression = tmp;
 	}
 	
-	public JsonProjection(List<String> idNames, String rename) {	//simple projection, with rename
+	public JsonProjection(List<Object> idNames, String rename) {	//simple projection, with rename
 		this.need_rename = true;
 		JsonExpression tmp = new JsonExpression();
 		tmp.type = "id";

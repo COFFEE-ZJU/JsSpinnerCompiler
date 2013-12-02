@@ -1,6 +1,7 @@
 import java.util.ArrayList;
+import java.util.List;
 
-public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
+public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	private boolean haveRename;
 	private String renameId;
 	private JsonSchema prevSchema;
@@ -12,25 +13,25 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	@Override 
-    public JsonExpression visitVar(JaqlSampleParser.VarContext ctx) { 
+    public JsonExpression visitVar(JaqlGrammarParser.VarContext ctx) { 
 		JsonExpression expr = new JsonExpression();
 		expr.type = "id";
+		int i;
 		if(ctx.dollar == null){
-			String rename = ctx.identifier(0).getText();
+			String rename = ctx.identifier().getText();
 			if(! haveRename || ! rename.equals(renameId))
 				throw new SemanticErrorException("variable "+rename+" undefined");
-			expr.id_name = new ArrayList<String>();
-			for(int i=1; i<ctx.identifier().size(); i++){
-				expr.id_name.add(ctx.identifier(i).getText());
-			}
+			i=1;
 		}
 		else{
 			if(haveRename)
 				throw new SemanticErrorException("variable $ undefined");
-			expr.id_name = new ArrayList<String>();
-			for(int i=0; i<ctx.identifier().size(); i++){
-				expr.id_name.add(ctx.identifier(i).getText());
-			}
+			i=0;
+		}
+
+		expr.id_name = new ArrayList<Object>();
+		for(; i<ctx.identifier().size(); i++){
+			expr.id_name.add(ctx.identifier(i).getText());
 		}
 		JsonSchema tmpSch = prevSchema;
 		String tmpString;
@@ -49,8 +50,26 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 		return expr;
 	}
 	
+	private void dealWithIdWithArrays(JsonExpression expr, List<JaqlGrammarParser.IdWithArrayContext> ctxs, JsonSchema currSchema){
+		expr.id_name = new ArrayList<Object>();
+		JsonSchema tmpSchema = currSchema;
+		
+		String tmpString;
+		int i;
+		for(i=0;i<expr.id_name.size()-1;i++){
+			tmpString = expr.id_name.get(i);
+			checkAttrContaining(tmpSch, tmpString);
+			if(tmpSch.nameToSchema.get(tmpString).type != Constants.JsonValueType.OBJECT)
+				throw new SemanticErrorException("attribute "+tmpString+" is not an object type");
+			tmpSch = tmpSch.nameToSchema.get(tmpString);
+		}
+		tmpString = expr.id_name.get(i);
+		checkAttrContaining(tmpSch, tmpString);
+		expr.retSchema = tmpSch.nameToSchema.get(tmpString);
+	}
+	
 	@Override 
-    public JsonExpression visitVarID(JaqlSampleParser.VarIDContext ctx) { 
+    public JsonExpression visitVarID(JaqlGrammarParser.VarIDContext ctx) { 
 		JsonExpression expr = new JsonExpression();
 		expr.type = "id";
 		
@@ -86,7 +105,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	@Override 
-	public JsonExpression visitExprMulDivLabel(JaqlSampleParser.ExprMulDivLabelContext ctx) {
+	public JsonExpression visitExprMulDivLabel(JaqlGrammarParser.ExprMulDivLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		switch (ctx.op.getText()) {
 		case "*":
@@ -114,7 +133,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	@Override 
-	public JsonExpression visitExprAddSubLabel(JaqlSampleParser.ExprAddSubLabelContext ctx) {
+	public JsonExpression visitExprAddSubLabel(JaqlGrammarParser.ExprAddSubLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		switch (ctx.op.getText()) {
 		case "+":
@@ -142,7 +161,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	@Override 
-	public JsonExpression visitExprIntLabel(JaqlSampleParser.ExprIntLabelContext ctx) {
+	public JsonExpression visitExprIntLabel(JaqlGrammarParser.ExprIntLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "int";
 		expr.int_value = Integer.parseInt(ctx.INT().getText());
@@ -152,7 +171,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	@Override 
-	public JsonExpression visitExprBoolLabel(JaqlSampleParser.ExprBoolLabelContext ctx) {
+	public JsonExpression visitExprBoolLabel(JaqlGrammarParser.ExprBoolLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "bool";
 		if(ctx.TRUE() != null) expr.bool_value = true;
@@ -164,7 +183,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	@Override 
-	public JsonExpression visitExprNullLabel(JaqlSampleParser.ExprNullLabelContext ctx) {
+	public JsonExpression visitExprNullLabel(JaqlGrammarParser.ExprNullLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "null";
 		expr.retSchema.type = Constants.JsonValueType.NULL;
@@ -173,7 +192,7 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	@Override 
-	public JsonExpression visitExprStringLabel(JaqlSampleParser.ExprStringLabelContext ctx) {
+	public JsonExpression visitExprStringLabel(JaqlGrammarParser.ExprStringLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "string";
 		expr.string_value = ctx.STRING().getText().replaceAll("\"", "");
@@ -182,13 +201,13 @@ public class ExprVisitor extends JaqlSampleBaseVisitor<JsonExpression> {
 	}
 	
 	@Override 
-	public JsonExpression visitExprSubExprLabel(JaqlSampleParser.ExprSubExprLabelContext ctx) {
+	public JsonExpression visitExprSubExprLabel(JaqlGrammarParser.ExprSubExprLabelContext ctx) {
 		
 		return visit(ctx.exprs()); 
 	}
 	
 	@Override 
-	public JsonExpression visitExprVarLabel(JaqlSampleParser.ExprVarLabelContext ctx) {
+	public JsonExpression visitExprVarLabel(JaqlGrammarParser.ExprVarLabelContext ctx) {
 		
 		return visit(ctx.var()); 
 	}
