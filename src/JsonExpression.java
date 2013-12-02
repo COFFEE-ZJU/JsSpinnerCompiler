@@ -13,7 +13,7 @@ public class JsonExpression {
 	@Expose Boolean bool_value = null;
 	
 	JsonSchema retSchema = new JsonSchema();
-	boolean lastNameIsArray = false;
+	boolean lastNameIsArray = true;		//for id type only
 	
 	public String getLastIdName(){
 		if(! type.equals("id")) throw new SemanticErrorException("expression is not id type");

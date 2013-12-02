@@ -86,8 +86,8 @@ exprs: exprs op=('*'|'/') exprs                                                 
      ;
 
 
-var: (identifier | dollar='$') arraySymbol* ('.' idWithArray)+  ;
-varID: (idWithArray) ('.' idWithArray)+  ;
+var: (identifier | dollar='$') arraySymbol* ('.' idWithArray)*  ;
+varID: (idWithArray) ('.' idWithArray)*  ;
 
 idWithArray: identifier arraySymbol*;
 

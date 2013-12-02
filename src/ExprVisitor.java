@@ -21,89 +21,104 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 			String rename = ctx.identifier().getText();
 			if(! haveRename || ! rename.equals(renameId))
 				throw new SemanticErrorException("variable "+rename+" undefined");
-			i=1;
 		}
 		else{
 			if(haveRename)
 				throw new SemanticErrorException("variable $ undefined");
-			i=0;
 		}
-
+		
 		expr.id_name = new ArrayList<Object>();
-		for(; i<ctx.identifier().size(); i++){
-			expr.id_name.add(ctx.identifier(i).getText());
-		}
 		JsonSchema tmpSch = prevSchema;
-		String tmpString;
-		int i;
-		for(i=0;i<expr.id_name.size()-1;i++){
-			tmpString = expr.id_name.get(i);
-			checkAttrContaining(tmpSch, tmpString);
-			if(tmpSch.nameToSchema.get(tmpString).type != Constants.JsonValueType.OBJECT)
-				throw new SemanticErrorException("attribute "+tmpString+" is not an object type");
-			tmpSch = tmpSch.nameToSchema.get(tmpString);
+		for(i=0;i<ctx.arraySymbol().size();i++){
+			if(tmpSch.items == null){
+				if(haveRename)
+					throw new SemanticErrorException("variable "+renameId+"'s type is mismatched");
+				else
+					throw new SemanticErrorException("variable $'s type is mismatched");
+			}
+			if(ctx.arraySymbol().get(i).INT() != null)
+				expr.id_name.add(Integer.parseInt(ctx.arraySymbol().get(i).INT().getText()));
+			else expr.id_name.add(-1);
+			
+			tmpSch = tmpSch.items;
 		}
-		tmpString = expr.id_name.get(i);
-		checkAttrContaining(tmpSch, tmpString);
-		expr.retSchema = tmpSch.nameToSchema.get(tmpString);
+		
+		if(ctx.arraySymbol().size() ==0 ) expr.lastNameIsArray = false;
+		else expr.lastNameIsArray = true;
+		dealWithIdWithArrays(expr, ctx.idWithArray(), tmpSch);
 		
 		return expr;
-	}
-	
-	private void dealWithIdWithArrays(JsonExpression expr, List<JaqlGrammarParser.IdWithArrayContext> ctxs, JsonSchema currSchema){
-		expr.id_name = new ArrayList<Object>();
-		JsonSchema tmpSchema = currSchema;
-		
-		String tmpString;
-		int i;
-		for(i=0;i<expr.id_name.size()-1;i++){
-			tmpString = expr.id_name.get(i);
-			checkAttrContaining(tmpSch, tmpString);
-			if(tmpSch.nameToSchema.get(tmpString).type != Constants.JsonValueType.OBJECT)
-				throw new SemanticErrorException("attribute "+tmpString+" is not an object type");
-			tmpSch = tmpSch.nameToSchema.get(tmpString);
-		}
-		tmpString = expr.id_name.get(i);
-		checkAttrContaining(tmpSch, tmpString);
-		expr.retSchema = tmpSch.nameToSchema.get(tmpString);
 	}
 	
 	@Override 
     public JsonExpression visitVarID(JaqlGrammarParser.VarIDContext ctx) { 
 		JsonExpression expr = new JsonExpression();
 		expr.type = "id";
+		int i;
 		
-		String rename = ctx.identifier(0).getText();
+		String rename = ctx.idWithArray(0).identifier().getText();
 		if(! haveRename || ! rename.equals(renameId))
 			throw new SemanticErrorException("variable "+rename+" undefined");
-		expr.id_name = new ArrayList<String>();
-		for(int i=1; i<ctx.identifier().size(); i++){
-			expr.id_name.add(ctx.identifier(i).getText());
-		}
+		expr.id_name = new ArrayList<Object>();
 		JsonSchema tmpSch = prevSchema;
-		String tmpString;
-		int i;
-		for(i=0;i<expr.id_name.size()-1;i++){
-			tmpString = expr.id_name.get(i);
-			checkAttrContaining(tmpSch, tmpString);
-			if(tmpSch.nameToSchema.get(tmpString).type != Constants.JsonValueType.OBJECT)
-				throw new SemanticErrorException("attribute "+tmpString+" is not an object type");
-			tmpSch = tmpSch.nameToSchema.get(tmpString);
+		for(i=0;i<ctx.idWithArray(0).arraySymbol().size();i++){
+			if(tmpSch.items == null){
+				if(haveRename)
+					throw new SemanticErrorException("variable "+renameId+"'s type is mismatched");
+				else
+					throw new SemanticErrorException("variable $'s type is mismatched");
+			}
+			if(ctx.idWithArray(0).arraySymbol().get(i).INT() != null)
+				expr.id_name.add(Integer.parseInt(ctx.idWithArray(0).arraySymbol().get(i).INT().getText()));
+			else expr.id_name.add(-1);
+			
+			tmpSch = tmpSch.items;
 		}
-		tmpString = expr.id_name.get(i);
-		checkAttrContaining(tmpSch, tmpString);
-		expr.retSchema = tmpSch.nameToSchema.get(tmpString);
-//		if(expr.retType == Constants.JsonValueType.ARRAY){
-//			expr.arrayDataType = tmpSch.arrayNameToType.get(tmpString);
-//			if(expr.arrayDataType == Constants.JsonValueType.OBJECT)
-//				expr.objectSchema = tmpSch.objectNameToSchema.get(tmpString);
-//		}
-//		if(expr.retType == Constants.JsonValueType.OBJECT)
-//			expr.objectSchema = tmpSch.objectNameToSchema.get(tmpString);
 		
+		if(ctx.idWithArray(0).arraySymbol().size() ==0 ) expr.lastNameIsArray = false;
+		else expr.lastNameIsArray = true;
+		dealWithIdWithArrays(expr, ctx.idWithArray().subList(1, ctx.idWithArray().size()), tmpSch);
 		return expr;
 	}
 	
+	private void dealWithIdWithArrays(JsonExpression expr, List<JaqlGrammarParser.IdWithArrayContext> ctxs, JsonSchema currSchema){
+		JsonSchema tmpSch = currSchema;
+		if(ctxs.size() != 0 && tmpSch.type != Constants.JsonValueType.OBJECT){
+			if(haveRename)
+				throw new SemanticErrorException("variable "+renameId+"'s type is mismatched");
+			else
+				throw new SemanticErrorException("variable $'s type is mismatched");
+		}
+			
+		String tmpString;
+		int i,j;
+		for(i=0;i<ctxs.size();i++){
+			List<JaqlGrammarParser.ArraySymbolContext> arrays = ctxs.get(i).arraySymbol();
+			tmpString = ctxs.get(i).identifier().getText();
+			checkAttrContaining(tmpSch, tmpString);
+			expr.id_name.add(tmpString);
+			tmpSch = tmpSch.nameToSchema.get(tmpString);
+			for(j=0;j<arrays.size();j++){
+				if(tmpSch.items == null)
+					throw new SemanticErrorException("attribute "+tmpString+"'s type is mismatched");
+				if(arrays.get(j).INT() != null)
+					expr.id_name.add(Integer.parseInt(arrays.get(j).INT().getText()));
+				else expr.id_name.add(-1);
+				
+				tmpSch = tmpSch.items;
+			}
+			
+			if(i != ctxs.size()-1 && tmpSch.type != Constants.JsonValueType.OBJECT)
+				throw new SemanticErrorException("attribute "+tmpString+"'s type is mismatched");
+		}
+		
+		if(ctxs.size() != 0){
+			if(ctxs.get(ctxs.size()-1).arraySymbol().size() == 0) expr.lastNameIsArray = false;
+			else expr.lastNameIsArray = true;
+		}
+		expr.retSchema = tmpSch;
+	}
+
 	@Override 
 	public JsonExpression visitExprMulDivLabel(JaqlGrammarParser.ExprMulDivLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
