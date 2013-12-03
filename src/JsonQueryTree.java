@@ -11,9 +11,9 @@ public class JsonQueryTree {
 	@Expose Object windowsize = null;
 	@Expose String stream_source = null;
 	@Expose List<Object> groupby_attribute_name = null;
-	@Expose List<Object> aggregation_attribute_name = null;
-	@Expose String result_attribute_name = null;
-	@Expose String aggregate_operation = null;
+	@Expose List<List<Object> > aggregation_attribute_names = null;
+	@Expose List<String> result_attribute_names = null;
+	@Expose List<String> aggregate_operations = null;
 	@Expose Boolean is_master = null;
 	
 	@Expose List<JsonProjection> projection_attibute_set = null;

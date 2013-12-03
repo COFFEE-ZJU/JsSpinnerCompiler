@@ -9,3 +9,5 @@ view3 = join deptCnt,emps where emps[0].dept == deptCnt.department into {emps[3]
 
 view3 -> transform each emp {emp.name, emp.salary, annualDiffFromAvg:emp.salary*12 - emp.avgInDept*12, newName: emp.tags[1][2]} -> istream;
 
+emps -> transform {xxx:$[0:5].another_object.tags[*][2]} -> filter $.xxx[3][4] == 12 -> dstream;
+

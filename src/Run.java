@@ -80,18 +80,6 @@ public class Run {
     }
     
     public static void main(String[] args) throws Exception {
-//		String inputFile = null;
-//		if ( args.length>0 ) inputFile = args[0];
-//		InputStream is = System.in;
-//		if ( inputFile!=null ) is = new FileInputStream(inputFile);
-//		ANTLRInputStream input = new ANTLRInputStream(is);
-//		JaqlSampleLexer lexer = new JaqlSampleLexer(input);
-//		CommonTokenStream tokens = new CommonTokenStream(lexer);
-//		JaqlSampleParser parser = new JaqlSampleParser(tokens);
-//		ParseTree tree = parser.prog(); // parse
-//		
-//		TransVisitor eval = new TransVisitor();
-//		eval.visit(tree);
     	
     	new Run();
     }

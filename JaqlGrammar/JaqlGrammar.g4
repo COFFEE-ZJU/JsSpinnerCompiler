@@ -91,7 +91,7 @@ varID: (idWithArray) ('.' idWithArray)*  ;
 
 idWithArray: identifier arraySymbol*;
 
-arraySymbol: ('[' (INT | star='*') ']') ;
+arraySymbol: ('[' (INT | star='*' | (INT range=':' INT)) ']') ;
 
 identifier: 'readFromWrapper' | 'readFromWrapperAsMaster' | 'join' | 'where' | 'into' | 'in' 
           | 'filter' | 'transform' | 'group' | 'window' | 'istream' | 'dstream' | 'rstream'

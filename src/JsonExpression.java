@@ -18,7 +18,8 @@ public class JsonExpression {
 	public String getLastIdName(){
 		if(! type.equals("id")) throw new SemanticErrorException("expression is not id type");
 		if(lastNameIsArray) throw new SemanticErrorException("need a field name");
-		return (String)id_name.get(id_name.size()-1);
+		if(id_name.size()==0) return "";
+		else return (String)id_name.get(id_name.size()-1);
 	}
 	
 //	Constants.JsonValueType retType = null;
