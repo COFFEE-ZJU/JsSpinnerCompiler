@@ -20,23 +20,23 @@ assignView: identifier '=' ( pipe | join )
           ;
 
 join: 'join' joinVar ',' joinVar
-      'where' varID '==' varID
-      'into' joinOut
+      'where' var '==' var
+      'into' jsonGen
     ;
 
 joinVar: (preserve='preserve')? (identifier 'in')? identifier;
 
-joinOut:'{' joinOutVar (',' joinOutVar)* '}' ;
+//joinOut:'{' joinOutVar (',' joinOutVar)* '}' ;
 
-joinOutVar: (identifier ':')? varID ;
+//joinOutVar: (identifier ':')? varID ;
 
 pipe: identifier ( '->' pipeExpr )+ ;
 
 pipeExpr: 'filter' ('each' identifier)? conditions                                      #filterLabel
-	| 'transform' ('each' identifier)? transExpr                                    #transformLabel
-        | 'group' (geach='each' identifier)? (gby='by' identifier '=' var (gas='as' identifier)? ) 'into' aggrExprs   #groupSingleLabel
+	| 'transform' ('each' identifier)? jsonGen                                    #transformLabel
+        | 'group' (geach='each' identifier)? (gby='by' identifier '=' var (gas='as' identifier)? ) 'into' jsonGen   #groupSingleLabel
         | 'window' '[' windowRange ']'                                          #windowLabel
-        | 'expand' ('each' identifier)? var?                                     #expandLabel
+        | 'expand' ('each' identifier)? jsonGen?                                     #expandLabel
         | stream                                                                #streamLabel
 	;
 
@@ -50,22 +50,19 @@ timeRange: 'unbounded' | 'now' ;
 
 timeUnit: ('seconds' | 'minutes' | 'hours' | 'days');
 
-aggrExprs: '{' aggrExpr (',' aggrExpr )* '}'
-        ;
+//aggrExprs: '{' aggrExpr (',' aggrExpr )* '}' ;
 
-aggrExpr: (identifier ':')? varID
+/*aggrExpr: (identifier ':')? varID
         | (identifier ':' aggrFunc)
         ;
+*/
 
-aggrFunc: aggrFuncName '(' var ')'
-        ;
-aggrFuncName:'sum'|'avg'|'max'|'min'|'count';
+//transExpr: '{' transExprVar (',' transExprVar)* '}';
 
-transExpr: '{' transExprVar (',' transExprVar)* '}';
-
-transExprVar: identifier ':' exprs
+/*transExprVar: identifier ':' exprs
             | var
             ;
+*/
 
 conditions: conditions 'and' conditions                                         #condAndLabel
           | conditions 'or' conditions                                          #condOrLabel
@@ -76,6 +73,18 @@ conditions: conditions 'and' conditions                                         
 
 comprator: ('<' | '<=' | '==' | '>=' | '>' | '!=') ;
 
+jsonGen:    arrayGen
+       |    objectGen
+       |    exprs
+       ;
+
+arrayGen:    '[' jsonGen (','jsonGen)* ']' ;
+objectGen:  '{' field (',' field)* '}';
+
+field:  identifier ':' jsonGen
+     |  var
+     ;
+           
 exprs: exprs op=('*'|'/') exprs                                                 #exprMulDivLabel
      |  exprs op=('+'|'-') exprs                                                #exprAddSubLabel
      |  var                                                                     #exprVarLabel
@@ -84,11 +93,14 @@ exprs: exprs op=('*'|'/') exprs                                                 
      |  NULL                                                                    #exprNullLabel
      |  STRING                                                                  #exprStringLabel
      |  '(' exprs ')'                                                           #exprSubExprLabel
+     | aggrFuncName                                                             #exprAggrFuncLabel
      ;
 
+aggrFunc: aggrFuncName '(' (var|arrayGen) ')';
 
-var: (identifier | dollar='$') arraySymbol* ('.' idWithArray)*  ;
-varID: (idWithArray) ('.' idWithArray)*  ;
+aggrFuncName:'sum'|'avg'|'max'|'min'|'count';
+
+var: (idWithArray) ('.' idWithArray)*  ;
 
 idWithArray: identifier arraySymbol*;
 
@@ -100,6 +112,7 @@ identifier: 'readFromWrapper' | 'readFromWrapperAsMaster' | 'join' | 'where' | '
           | 'seconds' | 'minutes' | 'hours' | 'days'
           | 'sum'|'avg'|'max'|'min'|'count'
           | ID
+          | dollar='$'
           ;
 
 TRUE:   'true';

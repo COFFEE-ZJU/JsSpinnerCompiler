@@ -2,14 +2,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
-	private boolean haveRename;
-	private String renameId;
-	private JsonSchema prevSchema;
+	private boolean haveDollar;
+	private List<String> renameIds;
+	private List<JsonSchema> prevSchemas;
 	
-	public ExprVisitor(boolean haveRename, String renameId, JsonSchema prevSchema){
-		this.haveRename = haveRename;
-		this.renameId = renameId;
-		this.prevSchema = prevSchema;
+	public ExprVisitor(boolean haveDollar, List<String> renameIds, List<JsonSchema> prevSchemas){
+		this.haveDollar = haveDollar;
+		this.renameIds = renameIds;
+		this.prevSchemas = prevSchemas;
 	}
 	
 	@Override 

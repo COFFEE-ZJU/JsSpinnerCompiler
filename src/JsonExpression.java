@@ -11,6 +11,7 @@ public class JsonExpression {
 	@Expose String string_value = null;
 	@Expose Integer int_value = null;
 	@Expose Boolean bool_value = null;
+	@Expose Constants.JsonAttrSource attribute_source = null;		//for join operation only
 	
 	JsonSchema retSchema = new JsonSchema();
 	boolean lastNameIsArray = true;		//for id type only

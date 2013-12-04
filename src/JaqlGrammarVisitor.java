@@ -15,9 +15,9 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitExpandLabel(JaqlGrammarParser.ExpandLabelContext ctx);
 
-	T visitAssignView(JaqlGrammarParser.AssignViewContext ctx);
+	T visitExprAggrFuncLabel(JaqlGrammarParser.ExprAggrFuncLabelContext ctx);
 
-	T visitAggrExpr(JaqlGrammarParser.AggrExprContext ctx);
+	T visitAssignView(JaqlGrammarParser.AssignViewContext ctx);
 
 	T visitStreamLabel(JaqlGrammarParser.StreamLabelContext ctx);
 
@@ -25,13 +25,9 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitPipe(JaqlGrammarParser.PipeContext ctx);
 
-	T visitAggrExprs(JaqlGrammarParser.AggrExprsContext ctx);
-
 	T visitIdWithArray(JaqlGrammarParser.IdWithArrayContext ctx);
 
 	T visitProg(JaqlGrammarParser.ProgContext ctx);
-
-	T visitJoinOut(JaqlGrammarParser.JoinOutContext ctx);
 
 	T visitWindowRowLabel(JaqlGrammarParser.WindowRowLabelContext ctx);
 
@@ -55,13 +51,15 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitTimeRange(JaqlGrammarParser.TimeRangeContext ctx);
 
-	T visitCondAndLabel(JaqlGrammarParser.CondAndLabelContext ctx);
+	T visitArrayGen(JaqlGrammarParser.ArrayGenContext ctx);
 
 	T visitAggrFuncName(JaqlGrammarParser.AggrFuncNameContext ctx);
 
+	T visitCondAndLabel(JaqlGrammarParser.CondAndLabelContext ctx);
+
 	T visitCondSubLabel(JaqlGrammarParser.CondSubLabelContext ctx);
 
-	T visitTransExprVar(JaqlGrammarParser.TransExprVarContext ctx);
+	T visitJsonGen(JaqlGrammarParser.JsonGenContext ctx);
 
 	T visitCondOrLabel(JaqlGrammarParser.CondOrLabelContext ctx);
 
@@ -71,19 +69,19 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitStat(JaqlGrammarParser.StatContext ctx);
 
-	T visitVarID(JaqlGrammarParser.VarIDContext ctx);
+	T visitField(JaqlGrammarParser.FieldContext ctx);
 
 	T visitGroupSingleLabel(JaqlGrammarParser.GroupSingleLabelContext ctx);
 
 	T visitWindowLabel(JaqlGrammarParser.WindowLabelContext ctx);
+
+	T visitObjectGen(JaqlGrammarParser.ObjectGenContext ctx);
 
 	T visitFilterLabel(JaqlGrammarParser.FilterLabelContext ctx);
 
 	T visitWindowPartitionLabel(JaqlGrammarParser.WindowPartitionLabelContext ctx);
 
 	T visitExprIntLabel(JaqlGrammarParser.ExprIntLabelContext ctx);
-
-	T visitJoinOutVar(JaqlGrammarParser.JoinOutVarContext ctx);
 
 	T visitExprStringLabel(JaqlGrammarParser.ExprStringLabelContext ctx);
 
@@ -92,6 +90,4 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitIdentifier(JaqlGrammarParser.IdentifierContext ctx);
 
 	T visitExprNullLabel(JaqlGrammarParser.ExprNullLabelContext ctx);
-
-	T visitTransExpr(JaqlGrammarParser.TransExprContext ctx);
 }

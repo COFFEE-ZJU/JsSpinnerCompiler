@@ -10,6 +10,8 @@ public class Constants {
 	public static String JSSPINNER_HOST = "localhost";
 	
 	public static enum JsonValueType{ARRAY, BOOLEAN, INTEGER, NUMBER, NULL, OBJECT, STRING};
+	public static enum JsonProjectionType{object, array, direct};
+	public static enum JsonAttrSource{left, right};
 	public static Map<String, JsonValueType> stringToJsonValueType = new HashMap<String, Constants.JsonValueType>(){
 		private static final long serialVersionUID = -3817390131714920532L;
 		{
@@ -24,6 +26,12 @@ public class Constants {
 	};
 	public static enum DataType {STREAM,RELATION};
 	public static enum OperationType {JOIN, FILTER, TRANS, GROUP, STREAM, WINDOW, EXPAND, NULL};
+	public static enum JsonOpType{
+		root, error, 
+		projection, leaf, join, groupby_aggregation, selection, expand, 
+		rangewindow, rowwindow, partitionwindow,
+		istream, rstream, dstream
+		};
 	
 	public static String ISTREAM = "istream";
 	public static String DSTREAM = "dstream";
@@ -35,4 +43,14 @@ public class Constants {
 	public static String GE = ">=";
 	public static String GT = ">";
 	public static String NE = "!=";
+	
+	public static boolean isStreamType(JsonOpType type){
+		if(type == Constants.JsonOpType.leaf ||
+    			type == Constants.JsonOpType.istream ||
+    			type == Constants.JsonOpType.rstream ||
+    			type == Constants.JsonOpType.dstream)
+			return true;
+		else
+			return false;
+	}
 }

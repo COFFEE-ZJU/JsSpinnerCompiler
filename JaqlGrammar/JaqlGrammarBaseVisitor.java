@@ -16,9 +16,9 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 
 	@Override public T visitExpandLabel(JaqlGrammarParser.ExpandLabelContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitAssignView(JaqlGrammarParser.AssignViewContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprAggrFuncLabel(JaqlGrammarParser.ExprAggrFuncLabelContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitAggrExpr(JaqlGrammarParser.AggrExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAssignView(JaqlGrammarParser.AssignViewContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitStreamLabel(JaqlGrammarParser.StreamLabelContext ctx) { return visitChildren(ctx); }
 
@@ -26,13 +26,9 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 
 	@Override public T visitPipe(JaqlGrammarParser.PipeContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitAggrExprs(JaqlGrammarParser.AggrExprsContext ctx) { return visitChildren(ctx); }
-
 	@Override public T visitIdWithArray(JaqlGrammarParser.IdWithArrayContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitProg(JaqlGrammarParser.ProgContext ctx) { return visitChildren(ctx); }
-
-	@Override public T visitJoinOut(JaqlGrammarParser.JoinOutContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitWindowRowLabel(JaqlGrammarParser.WindowRowLabelContext ctx) { return visitChildren(ctx); }
 
@@ -56,13 +52,15 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 
 	@Override public T visitTimeRange(JaqlGrammarParser.TimeRangeContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitCondAndLabel(JaqlGrammarParser.CondAndLabelContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArrayGen(JaqlGrammarParser.ArrayGenContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitAggrFuncName(JaqlGrammarParser.AggrFuncNameContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitCondAndLabel(JaqlGrammarParser.CondAndLabelContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitCondSubLabel(JaqlGrammarParser.CondSubLabelContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitTransExprVar(JaqlGrammarParser.TransExprVarContext ctx) { return visitChildren(ctx); }
+	@Override public T visitJsonGen(JaqlGrammarParser.JsonGenContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitCondOrLabel(JaqlGrammarParser.CondOrLabelContext ctx) { return visitChildren(ctx); }
 
@@ -72,19 +70,19 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 
 	@Override public T visitStat(JaqlGrammarParser.StatContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitVarID(JaqlGrammarParser.VarIDContext ctx) { return visitChildren(ctx); }
+	@Override public T visitField(JaqlGrammarParser.FieldContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitGroupSingleLabel(JaqlGrammarParser.GroupSingleLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitWindowLabel(JaqlGrammarParser.WindowLabelContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitObjectGen(JaqlGrammarParser.ObjectGenContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitFilterLabel(JaqlGrammarParser.FilterLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitWindowPartitionLabel(JaqlGrammarParser.WindowPartitionLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitExprIntLabel(JaqlGrammarParser.ExprIntLabelContext ctx) { return visitChildren(ctx); }
-
-	@Override public T visitJoinOutVar(JaqlGrammarParser.JoinOutVarContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitExprStringLabel(JaqlGrammarParser.ExprStringLabelContext ctx) { return visitChildren(ctx); }
 
@@ -93,6 +91,4 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	@Override public T visitIdentifier(JaqlGrammarParser.IdentifierContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitExprNullLabel(JaqlGrammarParser.ExprNullLabelContext ctx) { return visitChildren(ctx); }
-
-	@Override public T visitTransExpr(JaqlGrammarParser.TransExprContext ctx) { return visitChildren(ctx); }
 }
