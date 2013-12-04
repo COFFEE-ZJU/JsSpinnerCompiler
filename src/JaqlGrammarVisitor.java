@@ -13,6 +13,8 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitVar(JaqlGrammarParser.VarContext ctx);
 
+	T visitExpandLabel(JaqlGrammarParser.ExpandLabelContext ctx);
+
 	T visitAssignView(JaqlGrammarParser.AssignViewContext ctx);
 
 	T visitAggrExpr(JaqlGrammarParser.AggrExprContext ctx);

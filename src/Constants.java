@@ -23,7 +23,7 @@ public class Constants {
 		}
 	};
 	public static enum DataType {STREAM,RELATION};
-	public static enum OperationType {JOIN, FILTER, TRANS, GROUP, STREAM, WINDOW, NULL};
+	public static enum OperationType {JOIN, FILTER, TRANS, GROUP, STREAM, WINDOW, EXPAND, NULL};
 	
 	public static String ISTREAM = "istream";
 	public static String DSTREAM = "dstream";

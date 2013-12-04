@@ -24,7 +24,7 @@ join: 'join' joinVar ',' joinVar
       'into' joinOut
     ;
 
-joinVar: (identifier 'in')? identifier;
+joinVar: (preserve='preserve')? (identifier 'in')? identifier;
 
 joinOut:'{' joinOutVar (',' joinOutVar)* '}' ;
 
@@ -36,6 +36,7 @@ pipeExpr: 'filter' ('each' identifier)? conditions                              
 	| 'transform' ('each' identifier)? transExpr                                    #transformLabel
         | 'group' (geach='each' identifier)? (gby='by' identifier '=' var (gas='as' identifier)? ) 'into' aggrExprs   #groupSingleLabel
         | 'window' '[' windowRange ']'                                          #windowLabel
+        | 'expand' ('each' identifier)? var?                                     #expandLabel
         | stream                                                                #streamLabel
 	;
 

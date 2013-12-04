@@ -14,6 +14,8 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 
 	@Override public T visitVar(JaqlGrammarParser.VarContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitExpandLabel(JaqlGrammarParser.ExpandLabelContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitAssignView(JaqlGrammarParser.AssignViewContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitAggrExpr(JaqlGrammarParser.AggrExprContext ctx) { return visitChildren(ctx); }
