@@ -98,8 +98,8 @@ STRING=63
 'window'=28
 'rstream'=25
 'days'=24
-'dstream'=23
-'transform'=22
+'transform'=23
+'dstream'=22
 'null'=60
 '='=21
 'group'=20

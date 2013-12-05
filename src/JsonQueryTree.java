@@ -16,7 +16,6 @@ public class JsonQueryTree {
 //	@Expose List<List<Object> > aggregation_attribute_names = null;
 //	@Expose List<String> result_attribute_names = null;
 //	@Expose List<String> aggregate_operations = null;
-	@Expose List<Object> expand_attribute_name = null;
 	@Expose Boolean is_master = null;
 	
 	@Expose JsonProjection projection = null;

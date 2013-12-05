@@ -177,7 +177,44 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	
 	@Override
 	public JsonExpression visitExprAggrFuncLabel(JaqlGrammarParser.ExprAggrFuncLabelContext ctx) {
+		return visit(ctx.aggrFunc());
+	}
+	
+	@Override
+	public JsonExpression visitAggrFunc(JaqlGrammarParser.AggrFuncContext ctx) {
+		JsonExpression expr = new JsonExpression();
+		expr.type = "aggregation";
+		switch (ctx.aggrFuncName().getText()) {
+		case "sum":
+			expr.aggregate_operations = Constants.AggrFuncNames.sum;
+			break;
+		case "avg":
+			expr.aggregate_operations = Constants.AggrFuncNames.average;
+			break;
+		case "cnt":
+			expr.aggregate_operations = Constants.AggrFuncNames.count;
+			break;
+		case "min":
+			throw new SemanticErrorException("aggrFunc \"min\"currently not supported");
+		case "max":
+			throw new SemanticErrorException("aggrFunc \"max\"currently not supported");
+		default:
+			break;
+		}
+		expr.aggregate_projection = new ProjectionVisitor(haveDollar, renameIds, prevSchemas).visit(ctx.jsonGen());
+		expr.retSchema = expr.aggregate_projection.retSchema;
+		if(expr.retSchema.type != Constants.JsonValueType.ARRAY)
+			throw new SemanticErrorException("expecting array input type");
+		if(expr.aggregate_operations == Constants.AggrFuncNames.sum || expr.aggregate_operations == Constants.AggrFuncNames.average){
+			if(expr.retSchema.items.type != Constants.JsonValueType.NUMBER || expr.retSchema.items.type != Constants.JsonValueType.INTEGER)
+				throw new SemanticErrorException("expecting array of number or integer");
+			else expr.retSchema = expr.retSchema.items;
+		}
+		else{
+			expr.retSchema = new JsonSchema(Constants.JsonValueType.INTEGER);
+		}
 		
+		return expr;
 	}
 
 	@Override 

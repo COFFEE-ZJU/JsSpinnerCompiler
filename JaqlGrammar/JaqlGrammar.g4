@@ -93,10 +93,10 @@ exprs: exprs op=('*'|'/') exprs                                                 
      |  NULL                                                                    #exprNullLabel
      |  STRING                                                                  #exprStringLabel
      |  '(' exprs ')'                                                           #exprSubExprLabel
-     | aggrFuncName                                                             #exprAggrFuncLabel
+     | aggrFunc                                                                 #exprAggrFuncLabel
      ;
 
-aggrFunc: aggrFuncName '(' (var|arrayGen) ')';
+aggrFunc: aggrFuncName '(' jsonGen ')';
 
 aggrFuncName:'sum'|'avg'|'max'|'min'|'count';
 
