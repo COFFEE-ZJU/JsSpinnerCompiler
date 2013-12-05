@@ -4,13 +4,22 @@ import java.util.List;
 
 public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 	private boolean haveDollar;
-	private List<String> renameIds;
-	private List<JsonSchema> prevSchemas;
+	private String[] renameIds;
+	private JsonSchema[] prevSchemas;
 	
-	public ProjectionVisitor(boolean haveDollar, List<String> renameIds, List<JsonSchema> prevSchemas){
+	public ProjectionVisitor(boolean haveDollar, String[] renameIds, JsonSchema[] prevSchemas){
 		this.haveDollar = haveDollar;
 		this.renameIds = renameIds;
 		this.prevSchemas = prevSchemas;
+	}
+	
+	public ProjectionVisitor(boolean haveDollar, String renameId, JsonSchema prevSchema){
+		this.haveDollar = haveDollar;
+		this.prevSchemas = new JsonSchema[]{prevSchema};
+		if(haveDollar)
+			this.renameIds = null;
+		else
+			this.renameIds = new String[]{renameId};
 	}
 	
 	@Override 
@@ -59,11 +68,14 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 		JsonProjection tmpProj;
 		for(i=0;i<ctx.field().size();i++){
 			tmpProj = visit(ctx.field(i));
-			if(tmpProj.need_rename == false)
+			if(tmpProj.need_rename == false){
+				checkDuplication(proj.retSchema, tmpProj.expression.getLastIdName());
 				proj.retSchema.nameToSchema.put(tmpProj.expression.getLastIdName(), tmpProj.retSchema);
-			else
+			}
+			else{
+				checkDuplication(proj.retSchema, tmpProj.rename);
 				proj.retSchema.nameToSchema.put(tmpProj.rename, tmpProj.retSchema);
-			
+			}
 			proj.fields.add(tmpProj);
 		}
 		
@@ -86,5 +98,10 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 		}
 		
 		return proj;
+	}
+	
+	private void checkDuplication(JsonSchema schema, String id){
+		if(schema.nameToSchema.containsKey(id))
+			throw new SemanticErrorException("variable "+id+" duplicated");
 	}
 }

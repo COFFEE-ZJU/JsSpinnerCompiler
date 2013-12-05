@@ -3,13 +3,21 @@ import java.util.List;
 
 public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	private boolean haveDollar;
-	private List<String> renameIds;
-	private List<JsonSchema> prevSchemas;
+	private String[] renameIds;
+	private JsonSchema[] prevSchemas;
 	
-	public ExprVisitor(boolean haveDollar, List<String> renameIds, List<JsonSchema> prevSchemas){
+	public ExprVisitor(boolean haveDollar, String[] renameIds, JsonSchema[] prevSchemas){
 		this.haveDollar = haveDollar;
 		this.renameIds = renameIds;
 		this.prevSchemas = prevSchemas;
+	}
+	public ExprVisitor(boolean haveDollar, String renameId, JsonSchema prevSchema){
+		this.haveDollar = haveDollar;
+		this.prevSchemas = new JsonSchema[]{prevSchema};
+		if(haveDollar)
+			this.renameIds = null;
+		else
+			this.renameIds = new String[]{renameId};
 	}
 	
 	@Override 
@@ -166,6 +174,11 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.retSchema = tmpSch;
 		return nestTimes;
 	}
+	
+	@Override
+	public JsonExpression visitExprAggrFuncLabel(JaqlGrammarParser.ExprAggrFuncLabelContext ctx) {
+		
+	}
 
 	@Override 
 	public JsonExpression visitExprMulDivLabel(JaqlGrammarParser.ExprMulDivLabelContext ctx) {
@@ -263,6 +276,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		return expr; 
 	}
 	
+	
 	@Override 
 	public JsonExpression visitExprSubExprLabel(JaqlGrammarParser.ExprSubExprLabelContext ctx) {
 		
@@ -274,6 +288,8 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		
 		return visit(ctx.var()); 
 	}
+	
+	
 	
 	private void checkAttrContaining(JsonSchema schema, String attrName){
     	if(! schema.nameToSchema.containsKey(attrName))

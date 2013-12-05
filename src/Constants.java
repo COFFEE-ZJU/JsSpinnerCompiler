@@ -11,7 +11,8 @@ public class Constants {
 	
 	public static enum JsonValueType{ARRAY, BOOLEAN, INTEGER, NUMBER, NULL, OBJECT, STRING};
 	public static enum JsonProjectionType{object, array, direct};
-	public static enum JsonAttrSource{left, right};
+	public static enum JsonAttrSource{left, right, group_key_var, group_array};
+	public static enum AggrFuncNames{sum, average, count};
 	public static Map<String, JsonValueType> stringToJsonValueType = new HashMap<String, Constants.JsonValueType>(){
 		private static final long serialVersionUID = -3817390131714920532L;
 		{
@@ -32,10 +33,6 @@ public class Constants {
 		rangewindow, rowwindow, partitionwindow,
 		istream, rstream, dstream
 		};
-	
-	public static String ISTREAM = "istream";
-	public static String DSTREAM = "dstream";
-	public static String RSTREAM = "rstream";
 	
 	public static String LT = "<";
 	public static String LE = "<=";

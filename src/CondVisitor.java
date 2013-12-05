@@ -3,13 +3,13 @@ import java.util.List;
 
 public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	private boolean haveDollar;
-	private List<String> renameIds;
-	private List<JsonSchema> prevSchemas;
+	private String renameId;
+	private JsonSchema prevSchema;
 	
-	public CondVisitor(boolean haveDollar, List<String> renameIds, List<JsonSchema> prevSchemas){
+	public CondVisitor(boolean haveDollar, String renameId, JsonSchema prevSchema){
 		this.haveDollar = haveDollar;
-		this.renameIds = renameIds;
-		this.prevSchemas = prevSchemas;
+		this.renameId = renameId;
+		this.prevSchema = prevSchema;
 	}
 	
 	@Override 

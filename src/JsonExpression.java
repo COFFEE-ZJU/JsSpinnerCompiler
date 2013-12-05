@@ -4,7 +4,9 @@ import com.google.gson.annotations.Expose;
 
 
 public class JsonExpression {
-	@Expose String type = null;		//id, int, bool, null, string, add, sub, div, mul;
+	@Expose String type = null;		//id, int, bool, null, string, add, sub, div, mul, aggregation;
+	@Expose Constants.AggrFuncNames aggregate_operations = null;
+	@Expose JsonExpression aggregate_expression = null;
 	@Expose JsonExpression left = null;
 	@Expose JsonExpression right = null;
 	@Expose List<Object> id_name = null;
