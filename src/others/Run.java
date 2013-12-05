@@ -1,3 +1,4 @@
+package others;
 /***
  * Excerpted from "The Definitive ANTLR 4 Reference",
 
@@ -11,8 +12,15 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import visitors.JaqlVisitor;
+
+import antlrGen.JaqlGrammarLexer;
+import antlrGen.JaqlGrammarParser;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import constants.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +68,7 @@ public class Run {
 		        JaqlGrammarParser parser = new JaqlGrammarParser(tokens);
 		        ParseTree tree = parser.prog(); // parse
 
-		        TransVisitor eval = new TransVisitor();
+		        JaqlVisitor eval = new JaqlVisitor();
 		        eval.visit(tree);
 		        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		        out.write(gson.toJson(eval.resultTrees).getBytes());

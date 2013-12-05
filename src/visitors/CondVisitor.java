@@ -1,5 +1,13 @@
-import java.util.List;
+package visitors;
 
+import others.JsonSchema;
+
+import antlrGen.JaqlGrammarBaseVisitor;
+import antlrGen.JaqlGrammarParser;
+import constants.Constants.*;
+import constants.SemanticErrorException;
+
+import JsonAPI.JsonCondition;
 
 public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	private boolean haveDollar;
@@ -41,7 +49,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 		JsonCondition cond = new JsonCondition();
 		cond.op = "bool";
 		cond.bool_expression = new ExprVisitor(haveDollar, renameId, prevSchema).visit(ctx.var());
-		if(cond.bool_expression.retSchema.type != Constants.JsonValueType.BOOLEAN)
+		if(cond.bool_expression.retSchema.type != JsonValueType.BOOLEAN)
 			throw new SemanticErrorException("attribute "+cond.bool_expression.id_name+" is not boolean type");
 		
 		return cond; 
@@ -83,16 +91,16 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 
 		cond.left_expression = new ExprVisitor(haveDollar, renameId, prevSchema).visit(ctx.exprs(0));
 		cond.right_expression = new ExprVisitor(haveDollar, renameId, prevSchema).visit(ctx.exprs(1));
-		Constants.JsonValueType let = cond.left_expression.retSchema.type;
-		Constants.JsonValueType ret = cond.right_expression.retSchema.type;
+		JsonValueType let = cond.left_expression.retSchema.type;
+		JsonValueType ret = cond.right_expression.retSchema.type;
 		
-		if((let != Constants.JsonValueType.INTEGER && let != Constants.JsonValueType.NUMBER)
-				|| (ret != Constants.JsonValueType.INTEGER && ret != Constants.JsonValueType.NUMBER)){
+		if((let != JsonValueType.INTEGER && let != JsonValueType.NUMBER)
+				|| (ret != JsonValueType.INTEGER && ret != JsonValueType.NUMBER)){
 			
 			switch (cond.op) {
 			case "eq":
 			case "ne":
-				if(let == Constants.JsonValueType.NULL || ret == Constants.JsonValueType.NULL) break;
+				if(let == JsonValueType.NULL || ret == JsonValueType.NULL) break;
 				
 				if(! cond.left_expression.retSchema.equals(cond.right_expression.retSchema))
 					throw new SemanticErrorException("comparision type mismatch");

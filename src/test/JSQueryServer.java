@@ -1,16 +1,11 @@
 package test;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.CharBuffer;
-
-import com.google.gson.Gson;
 
 public class JSQueryServer {
 	public static final int SEND_PORT = 3000;
@@ -53,11 +48,11 @@ public class JSQueryServer {
 	
 	public JSQueryServer() throws IOException{
 		int i =0;
-		new ExecThread("input_3").start();
-		while(i < 1){
-			new ExecThread("input").start();
-			i++;
-		}
+		new ExecThread("input_4").start();
+//		while(i < 1){
+//			new ExecThread("input").start();
+//			i++;
+//		}
 	}
 	
 	public static void main(String[] args) throws IOException {

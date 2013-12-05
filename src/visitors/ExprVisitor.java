@@ -1,15 +1,33 @@
+package visitors;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import others.JsonSchema;
+
+import antlrGen.JaqlGrammarBaseVisitor;
+import antlrGen.JaqlGrammarParser;
+import constants.Constants.*;
+import constants.SemanticErrorException;
+
+import JsonAPI.JsonExpression;
 
 public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	private boolean haveDollar;
 	private String[] renameIds;
 	private JsonSchema[] prevSchemas;
+	private OperationType opType = null;
 	
 	public ExprVisitor(boolean haveDollar, String[] renameIds, JsonSchema[] prevSchemas){
 		this.haveDollar = haveDollar;
 		this.renameIds = renameIds;
 		this.prevSchemas = prevSchemas;
+	}
+	public ExprVisitor(boolean haveDollar, String[] renameIds, JsonSchema[] prevSchemas, OperationType opType){
+		this.haveDollar = haveDollar;
+		this.renameIds = renameIds;
+		this.prevSchemas = prevSchemas;
+		this.opType = opType;
 	}
 	public ExprVisitor(boolean haveDollar, String renameId, JsonSchema prevSchema){
 		this.haveDollar = haveDollar;
@@ -24,76 +42,24 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
     public JsonExpression visitVar(JaqlGrammarParser.VarContext ctx) { 
 		JsonExpression expr = new JsonExpression();
 		expr.type = "id";
-		expr.retSchema = prevSchema;
-		int i,nestTimes=0;
-		if(ctx.dollar == null){
-			String rename = ctx.identifier().getText();
-			if(! haveRename || ! rename.equals(renameId))
-				throw new SemanticErrorException("variable "+rename+" undefined");
+		int i,nestTimes=0,schPos;
+		if(ctx.idWithArray(0).identifier().dollar == null){
+			String rename = ctx.idWithArray(0).identifier().getText();
+			schPos = getSchemaPos(rename);
 		}
 		else{
-			if(haveRename)
+			if(! haveDollar)
 				throw new SemanticErrorException("variable $ undefined");
+			schPos = prevSchemas.length-1;
 		}
+		expr.retSchema = prevSchemas[schPos];
 		
 		expr.id_name = new ArrayList<Object>();
-		JsonSchema tmpSch = prevSchema;
-		for(i=0;i<ctx.arraySymbol().size();i++){
-			if(tmpSch.items == null){
-				if(haveRename)
-					throw new SemanticErrorException("variable "+renameId+"'s type is mismatched");
-				else
-					throw new SemanticErrorException("variable $'s type is mismatched");
-			}
-			if(ctx.arraySymbol().get(i).star != null){
-				expr.id_name.add(-1);
-				nestTimes ++;
-			}
-			else if(ctx.arraySymbol().get(i).range != null){
-				int[] ranges = new int[2];
-				ranges[0] = Integer.parseInt(ctx.arraySymbol().get(i).INT(0).getText());
-				ranges[1] = Integer.parseInt(ctx.arraySymbol().get(i).INT(1).getText());
-				if(ranges[0]>ranges[1])
-					throw new SemanticErrorException("array range less than 1");
-				expr.id_name.add(ranges);
-				nestTimes ++;
-			}
-			else expr.id_name.add(Integer.parseInt(ctx.arraySymbol().get(i).INT(0).getText()));
-			
-			tmpSch = tmpSch.items;
-		}
-		
-		if(ctx.arraySymbol().size() ==0 && ctx.dollar == null) expr.lastNameIsArray = false;
-		else expr.lastNameIsArray = true;
-		nestTimes += dealWithIdWithArrays(expr, ctx.idWithArray(), tmpSch);
-		
-		for(i=0;i<nestTimes;i++){
-			tmpSch = new JsonSchema(Constants.JsonValueType.ARRAY);
-			tmpSch.items = expr.retSchema;
-			expr.retSchema = tmpSch;
-		}
-		return expr;
-	}
-	
-	@Override 
-    public JsonExpression visitVarID(JaqlGrammarParser.VarIDContext ctx) { 
-		JsonExpression expr = new JsonExpression();
-		expr.type = "id";
-		expr.retSchema = prevSchema;
-		int i,nestTimes=0;
-		
-		String rename = ctx.idWithArray(0).identifier().getText();
-		if(! haveRename || ! rename.equals(renameId))
-			throw new SemanticErrorException("variable "+rename+" undefined");
-		expr.id_name = new ArrayList<Object>();
-		JsonSchema tmpSch = prevSchema;
+		JsonSchema tmpSch = prevSchemas[schPos];
 		for(i=0;i<ctx.idWithArray(0).arraySymbol().size();i++){
-			if(tmpSch.items == null){
-				if(haveRename)
-					throw new SemanticErrorException("variable "+renameId+"'s type is mismatched");
-				else
-					throw new SemanticErrorException("variable $'s type is mismatched");
-			}
+			if(tmpSch.items == null)
+				throw new SemanticErrorException("variable "+ctx.idWithArray(0).identifier().getText()+"'s type is mismatched");
+			
 			if(ctx.idWithArray(0).arraySymbol().get(i).star != null){
 				expr.id_name.add(-1);
 				nestTimes ++;
@@ -112,27 +78,36 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 			tmpSch = tmpSch.items;
 		}
 		
-		if(ctx.idWithArray(0).arraySymbol().size() ==0 ) expr.lastNameIsArray = false;
+		if(ctx.idWithArray(0).arraySymbol().size() ==0 && ctx.idWithArray(0).identifier().dollar == null) expr.lastNameIsArray = false;
 		else expr.lastNameIsArray = true;
+		
+		if(ctx.idWithArray().size() > 1 ){
+			if(tmpSch.type != JsonValueType.OBJECT)
+				throw new SemanticErrorException("variable "+ctx.idWithArray(0).identifier().getText()+"'s type is mismatched");
+		}
 		nestTimes += dealWithIdWithArrays(expr, ctx.idWithArray().subList(1, ctx.idWithArray().size()), tmpSch);
 		
 		for(i=0;i<nestTimes;i++){
-			tmpSch = new JsonSchema(Constants.JsonValueType.ARRAY);
+			tmpSch = new JsonSchema(JsonValueType.ARRAY);
 			tmpSch.items = expr.retSchema;
 			expr.retSchema = tmpSch;
+		}
+		
+		if(opType == OperationType.JOIN){
+			if(schPos == 0) expr.attribute_source = JsonAttrSource.left;
+			else expr.attribute_source = JsonAttrSource.right;
+		}
+		else if(opType == OperationType.GROUP){
+			if(schPos == 0) expr.attribute_source = JsonAttrSource.group_key_var;
+			else expr.attribute_source = JsonAttrSource.group_array;
 		}
 		return expr;
 	}
 	
+	
 	private int dealWithIdWithArrays(JsonExpression expr, List<JaqlGrammarParser.IdWithArrayContext> ctxs, JsonSchema currSchema){
 		JsonSchema tmpSch = currSchema;
 		int nestTimes=0;
-		if(ctxs.size() != 0 && tmpSch.type != Constants.JsonValueType.OBJECT){
-			if(haveRename)
-				throw new SemanticErrorException("variable "+renameId+"'s type is mismatched");
-			else
-				throw new SemanticErrorException("variable $'s type is mismatched");
-		}
 			
 		String tmpString;
 		int i,j;
@@ -163,7 +138,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 				tmpSch = tmpSch.items;
 			}
 			
-			if(i != ctxs.size()-1 && tmpSch.type != Constants.JsonValueType.OBJECT)
+			if(i != ctxs.size()-1 && tmpSch.type != JsonValueType.OBJECT)
 				throw new SemanticErrorException("attribute "+tmpString+"'s type is mismatched");
 		}
 		
@@ -186,13 +161,13 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.type = "aggregation";
 		switch (ctx.aggrFuncName().getText()) {
 		case "sum":
-			expr.aggregate_operations = Constants.AggrFuncNames.sum;
+			expr.aggregate_operations = AggrFuncNames.sum;
 			break;
 		case "avg":
-			expr.aggregate_operations = Constants.AggrFuncNames.average;
+			expr.aggregate_operations = AggrFuncNames.average;
 			break;
 		case "cnt":
-			expr.aggregate_operations = Constants.AggrFuncNames.count;
+			expr.aggregate_operations = AggrFuncNames.count;
 			break;
 		case "min":
 			throw new SemanticErrorException("aggrFunc \"min\"currently not supported");
@@ -201,17 +176,17 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		default:
 			break;
 		}
-		expr.aggregate_projection = new ProjectionVisitor(haveDollar, renameIds, prevSchemas).visit(ctx.jsonGen());
+		expr.aggregate_projection = new ProjectionVisitor(haveDollar, renameIds, prevSchemas, opType).visit(ctx.jsonGen());
 		expr.retSchema = expr.aggregate_projection.retSchema;
-		if(expr.retSchema.type != Constants.JsonValueType.ARRAY)
+		if(expr.retSchema.type != JsonValueType.ARRAY)
 			throw new SemanticErrorException("expecting array input type");
-		if(expr.aggregate_operations == Constants.AggrFuncNames.sum || expr.aggregate_operations == Constants.AggrFuncNames.average){
-			if(expr.retSchema.items.type != Constants.JsonValueType.NUMBER || expr.retSchema.items.type != Constants.JsonValueType.INTEGER)
+		if(expr.aggregate_operations == AggrFuncNames.sum || expr.aggregate_operations == AggrFuncNames.average){
+			if(expr.retSchema.items.type != JsonValueType.NUMBER && expr.retSchema.items.type != JsonValueType.INTEGER)
 				throw new SemanticErrorException("expecting array of number or integer");
 			else expr.retSchema = expr.retSchema.items;
 		}
 		else{
-			expr.retSchema = new JsonSchema(Constants.JsonValueType.INTEGER);
+			expr.retSchema = new JsonSchema(JsonValueType.INTEGER);
 		}
 		
 		return expr;
@@ -233,14 +208,14 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.left = visit(ctx.exprs(0));
 		expr.right = visit(ctx.exprs(1));
 		
-		if((expr.left.retSchema.type != Constants.JsonValueType.INTEGER && expr.left.retSchema.type != Constants.JsonValueType.NUMBER) ||
-				(expr.right.retSchema.type != Constants.JsonValueType.INTEGER && expr.right.retSchema.type != Constants.JsonValueType.NUMBER))
-			throw new SemanticErrorException("unsupported type for multiply/divide");
+		if((expr.left.retSchema.type != JsonValueType.INTEGER && expr.left.retSchema.type != JsonValueType.NUMBER) ||
+				(expr.right.retSchema.type != JsonValueType.INTEGER && expr.right.retSchema.type != JsonValueType.NUMBER))
+			throw new SemanticErrorException("unsupported type for multiply/divide"+expr.left.id_name);
 			
-		if(expr.left.retSchema.type == Constants.JsonValueType.INTEGER && expr.right.retSchema.type == Constants.JsonValueType.INTEGER)
-			expr.retSchema.type = Constants.JsonValueType.INTEGER;
+		if(expr.left.retSchema.type == JsonValueType.INTEGER && expr.right.retSchema.type == JsonValueType.INTEGER)
+			expr.retSchema.type = JsonValueType.INTEGER;
 		else
-			expr.retSchema.type = Constants.JsonValueType.NUMBER;
+			expr.retSchema.type = JsonValueType.NUMBER;
 		
 		return expr; 
 	}
@@ -261,14 +236,14 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.left = visit(ctx.exprs(0));
 		expr.right = visit(ctx.exprs(1));
 		
-		if((expr.left.retSchema.type != Constants.JsonValueType.INTEGER && expr.left.retSchema.type != Constants.JsonValueType.NUMBER) ||
-				(expr.right.retSchema.type != Constants.JsonValueType.INTEGER && expr.right.retSchema.type != Constants.JsonValueType.NUMBER))
+		if((expr.left.retSchema.type != JsonValueType.INTEGER && expr.left.retSchema.type != JsonValueType.NUMBER) ||
+				(expr.right.retSchema.type != JsonValueType.INTEGER && expr.right.retSchema.type != JsonValueType.NUMBER))
 			throw new SemanticErrorException("unsupported type for multiply/divide");
 		
-		if(expr.left.retSchema.type == Constants.JsonValueType.INTEGER && expr.right.retSchema.type == Constants.JsonValueType.INTEGER)
-			expr.retSchema.type = Constants.JsonValueType.INTEGER;
+		if(expr.left.retSchema.type == JsonValueType.INTEGER && expr.right.retSchema.type == JsonValueType.INTEGER)
+			expr.retSchema.type = JsonValueType.INTEGER;
 		else
-			expr.retSchema.type = Constants.JsonValueType.NUMBER;
+			expr.retSchema.type = JsonValueType.NUMBER;
 		
 		return expr; 
 	}
@@ -278,7 +253,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "int";
 		expr.int_value = Integer.parseInt(ctx.INT().getText());
-		expr.retSchema.type = Constants.JsonValueType.INTEGER;
+		expr.retSchema.type = JsonValueType.INTEGER;
 		
 		return expr; 
 	}
@@ -290,7 +265,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		if(ctx.TRUE() != null) expr.bool_value = true;
 		else expr.bool_value = false;
 		
-		expr.retSchema.type = Constants.JsonValueType.BOOLEAN;
+		expr.retSchema.type = JsonValueType.BOOLEAN;
 		
 		return expr;
 	}
@@ -299,7 +274,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	public JsonExpression visitExprNullLabel(JaqlGrammarParser.ExprNullLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "null";
-		expr.retSchema.type = Constants.JsonValueType.NULL;
+		expr.retSchema.type = JsonValueType.NULL;
 		
 		return expr; 
 	}
@@ -309,7 +284,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.type = "string";
 		expr.string_value = ctx.STRING().getText().replaceAll("\"", "");
-		expr.retSchema.type = Constants.JsonValueType.STRING;
+		expr.retSchema.type = JsonValueType.STRING;
 		return expr; 
 	}
 	
@@ -326,7 +301,16 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		return visit(ctx.var()); 
 	}
 	
-	
+	private int getSchemaPos(String rename){
+		if(renameIds == null || renameIds.length == 0)
+			throw new SemanticErrorException("variable "+rename+"undefined");
+		
+		for(int i=0;i<renameIds.length;i++){
+			if(rename.equals(renameIds[i])) return i;
+		}
+		
+		throw new SemanticErrorException("variable "+rename+"undefined");
+	}
 	
 	private void checkAttrContaining(JsonSchema schema, String attrName){
     	if(! schema.nameToSchema.containsKey(attrName))

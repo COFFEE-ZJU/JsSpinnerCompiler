@@ -1,3 +1,4 @@
+package antlrGen;
 // Generated from JaqlGrammar.g4 by ANTLR 4.0
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
