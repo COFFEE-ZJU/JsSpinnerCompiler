@@ -13,6 +13,8 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitVar(JaqlGrammarParser.VarContext ctx);
 
+	T visitCondNegLabel(JaqlGrammarParser.CondNegLabelContext ctx);
+
 	T visitExpandLabel(JaqlGrammarParser.ExpandLabelContext ctx);
 
 	T visitExprAggrFuncLabel(JaqlGrammarParser.ExprAggrFuncLabelContext ctx);
@@ -41,8 +43,6 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitExprBoolLabel(JaqlGrammarParser.ExprBoolLabelContext ctx);
 
-	T visitExprMulDivLabel(JaqlGrammarParser.ExprMulDivLabelContext ctx);
-
 	T visitExprVarLabel(JaqlGrammarParser.ExprVarLabelContext ctx);
 
 	T visitComprator(JaqlGrammarParser.CompratorContext ctx);
@@ -66,6 +66,8 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitReadStream(JaqlGrammarParser.ReadStreamContext ctx);
 
 	T visitJoin(JaqlGrammarParser.JoinContext ctx);
+
+	T visitExprMulDivModLabel(JaqlGrammarParser.ExprMulDivModLabelContext ctx);
 
 	T visitStat(JaqlGrammarParser.StatContext ctx);
 

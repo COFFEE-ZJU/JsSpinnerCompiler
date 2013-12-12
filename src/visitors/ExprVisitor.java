@@ -3,6 +3,8 @@ package visitors;
 import java.util.ArrayList;
 import java.util.List;
 
+import jsonAPI.JsonExpression;
+
 import others.JsonSchema;
 
 import antlrGen.JaqlGrammarBaseVisitor;
@@ -10,7 +12,6 @@ import antlrGen.JaqlGrammarParser;
 import constants.Constants.*;
 import constants.SemanticErrorException;
 
-import JsonAPI.JsonExpression;
 
 public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	private boolean haveDollar;
@@ -193,7 +194,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	}
 
 	@Override 
-	public JsonExpression visitExprMulDivLabel(JaqlGrammarParser.ExprMulDivLabelContext ctx) {
+	public JsonExpression visitExprMulDivModLabel(JaqlGrammarParser.ExprMulDivModLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		switch (ctx.op.getText()) {
 		case "*":
@@ -202,15 +203,21 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		case "/":
 			expr.type = "div";
 			break;
+		case "%":
+			expr.type = "mod";
+			break;
 		default:
 			break;
 		}
 		expr.left = visit(ctx.exprs(0));
 		expr.right = visit(ctx.exprs(1));
 		
+		if(expr.type.equals("mod") && (expr.left.retSchema.type != JsonValueType.INTEGER || expr.right.retSchema.type != JsonValueType.INTEGER) )
+			throw new SemanticErrorException("mod only support integers");
+		
 		if((expr.left.retSchema.type != JsonValueType.INTEGER && expr.left.retSchema.type != JsonValueType.NUMBER) ||
 				(expr.right.retSchema.type != JsonValueType.INTEGER && expr.right.retSchema.type != JsonValueType.NUMBER))
-			throw new SemanticErrorException("unsupported type for multiply/divide"+expr.left.id_name);
+			throw new SemanticErrorException("unsupported type for multiply/divide/mod"+expr.left.id_name);
 			
 		if(expr.left.retSchema.type == JsonValueType.INTEGER && expr.right.retSchema.type == JsonValueType.INTEGER)
 			expr.retSchema.type = JsonValueType.INTEGER;

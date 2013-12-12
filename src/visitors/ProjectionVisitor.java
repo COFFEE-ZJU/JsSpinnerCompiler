@@ -1,6 +1,8 @@
 package visitors;
 
 import java.util.ArrayList;
+
+import jsonAPI.JsonProjection;
 import others.JsonSchema;
 
 import antlrGen.JaqlGrammarBaseVisitor;
@@ -9,7 +11,6 @@ import antlrGen.JaqlGrammarParser;
 import constants.Constants.*;
 import constants.SemanticErrorException;
 
-import JsonAPI.JsonProjection;
 
 
 public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{

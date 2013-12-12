@@ -1,4 +1,4 @@
-package JsonAPI;
+package jsonAPI;
 
 import java.util.List;
 import others.JsonSchema;
@@ -13,8 +13,8 @@ public class JsonQueryTree {
 	@Expose public JsonCondition selection_condition = null;
 	@Expose public List<Object> left_join_attribute = null;
 	@Expose public List<Object> right_join_attribute = null;
-	@Expose public Boolean left_outter = null;
-	@Expose public Boolean right_outter = null;
+	@Expose public Boolean left_outer = null;
+	@Expose public Boolean right_outer = null;
 	@Expose public Object windowsize = null;
 	@Expose public String stream_source = null;
 	@Expose public List<Object> groupby_attribute_name = null;

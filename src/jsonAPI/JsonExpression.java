@@ -1,4 +1,4 @@
-package JsonAPI;
+package jsonAPI;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import constants.Constants.JsonAttrSource;
 
 
 public class JsonExpression {
-	@Expose public String type = null;		//id, int, bool, null, string, add, sub, div, mul, aggregation;
+	@Expose public String type = null;		//id, int, bool, null, string, add, sub, div, mul, mod, aggregation;
 	@Expose public AggrFuncNames aggregate_operations = null;
 	@Expose public JsonProjection aggregate_projection = null;
 	@Expose public JsonExpression left = null;

@@ -1,4 +1,5 @@
 package antlrGen;
+
 // Generated from JaqlGrammar.g4 by ANTLR 4.0
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.Token;
@@ -14,6 +15,8 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	@Override public T visitCondCompLabel(JaqlGrammarParser.CondCompLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitVar(JaqlGrammarParser.VarContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitCondNegLabel(JaqlGrammarParser.CondNegLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitExpandLabel(JaqlGrammarParser.ExpandLabelContext ctx) { return visitChildren(ctx); }
 
@@ -43,8 +46,6 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 
 	@Override public T visitExprBoolLabel(JaqlGrammarParser.ExprBoolLabelContext ctx) { return visitChildren(ctx); }
 
-	@Override public T visitExprMulDivLabel(JaqlGrammarParser.ExprMulDivLabelContext ctx) { return visitChildren(ctx); }
-
 	@Override public T visitExprVarLabel(JaqlGrammarParser.ExprVarLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitComprator(JaqlGrammarParser.CompratorContext ctx) { return visitChildren(ctx); }
@@ -68,6 +69,8 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	@Override public T visitReadStream(JaqlGrammarParser.ReadStreamContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitJoin(JaqlGrammarParser.JoinContext ctx) { return visitChildren(ctx); }
+
+	@Override public T visitExprMulDivModLabel(JaqlGrammarParser.ExprMulDivModLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitStat(JaqlGrammarParser.StatContext ctx) { return visitChildren(ctx); }
 

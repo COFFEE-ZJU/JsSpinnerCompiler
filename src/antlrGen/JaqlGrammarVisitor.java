@@ -1,4 +1,5 @@
 package antlrGen;
+
 // Generated from JaqlGrammar.g4 by ANTLR 4.0
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.Token;
@@ -13,6 +14,8 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitCondCompLabel(JaqlGrammarParser.CondCompLabelContext ctx);
 
 	T visitVar(JaqlGrammarParser.VarContext ctx);
+
+	T visitCondNegLabel(JaqlGrammarParser.CondNegLabelContext ctx);
 
 	T visitExpandLabel(JaqlGrammarParser.ExpandLabelContext ctx);
 
@@ -42,8 +45,6 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitExprBoolLabel(JaqlGrammarParser.ExprBoolLabelContext ctx);
 
-	T visitExprMulDivLabel(JaqlGrammarParser.ExprMulDivLabelContext ctx);
-
 	T visitExprVarLabel(JaqlGrammarParser.ExprVarLabelContext ctx);
 
 	T visitComprator(JaqlGrammarParser.CompratorContext ctx);
@@ -67,6 +68,8 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	T visitReadStream(JaqlGrammarParser.ReadStreamContext ctx);
 
 	T visitJoin(JaqlGrammarParser.JoinContext ctx);
+
+	T visitExprMulDivModLabel(JaqlGrammarParser.ExprMulDivModLabelContext ctx);
 
 	T visitStat(JaqlGrammarParser.StatContext ctx);
 

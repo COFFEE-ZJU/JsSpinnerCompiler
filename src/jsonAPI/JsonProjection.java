@@ -1,4 +1,4 @@
-package JsonAPI;
+package jsonAPI;
 
 import java.util.List;
 

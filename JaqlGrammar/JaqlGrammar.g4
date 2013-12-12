@@ -64,11 +64,12 @@ timeUnit: ('seconds' | 'minutes' | 'hours' | 'days');
             ;
 */
 
-conditions: conditions 'and' conditions                                         #condAndLabel
-          | conditions 'or' conditions                                          #condOrLabel
+conditions: '(' conditions ')'                                                  #condSubLabel
+          | '!' conditions                                                      #condNegLabel
           | exprs comprator exprs                                               #condCompLabel
+          | conditions 'and' conditions                                         #condAndLabel
+          | conditions 'or' conditions                                          #condOrLabel
           | var                                                                 #condVarLabel
-          | '(' conditions ')'                                                  #condSubLabel
           ;
 
 comprator: ('<' | '<=' | '==' | '>=' | '>' | '!=') ;
@@ -85,7 +86,7 @@ field:  identifier ':' jsonGen
      |  var
      ;
            
-exprs: exprs op=('*'|'/') exprs                                                 #exprMulDivLabel
+exprs: exprs op=('*'|'/'|'%') exprs                                             #exprMulDivModLabel
      |  exprs op=('+'|'-') exprs                                                #exprAddSubLabel
      |  var                                                                     #exprVarLabel
      |  INT                                                                     #exprIntLabel

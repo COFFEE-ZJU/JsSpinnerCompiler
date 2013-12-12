@@ -1,5 +1,6 @@
 package visitors;
 
+import jsonAPI.JsonCondition;
 import others.JsonSchema;
 
 import antlrGen.JaqlGrammarBaseVisitor;
@@ -7,7 +8,6 @@ import antlrGen.JaqlGrammarParser;
 import constants.Constants.*;
 import constants.SemanticErrorException;
 
-import JsonAPI.JsonCondition;
 
 public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	private boolean haveDollar;
@@ -35,6 +35,14 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 		cond.op = "or";
 		cond.left_condition = visit(ctx.conditions(0));
 		cond.right_condition = visit(ctx.conditions(1));
+		return cond; 
+	}
+	
+	@Override 
+	public JsonCondition visitCondNegLabel(JaqlGrammarParser.CondNegLabelContext ctx) { 
+		JsonCondition cond = new JsonCondition();
+		cond.op = "neg";
+		cond.condition = visit(ctx.conditions());
 		return cond; 
 	}
 	
