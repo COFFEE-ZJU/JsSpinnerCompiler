@@ -48,7 +48,7 @@ public class JSQueryServer {
 	
 	public JSQueryServer() throws IOException{
 		int i =0;
-		new ExecThread("input_4").start();
+		new ExecThread("input").start();
 //		while(i < 1){
 //			new ExecThread("input").start();
 //			i++;

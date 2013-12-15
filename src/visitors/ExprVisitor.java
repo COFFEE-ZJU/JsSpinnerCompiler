@@ -162,13 +162,13 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.type = "aggregation";
 		switch (ctx.aggrFuncName().getText()) {
 		case "sum":
-			expr.aggregate_operations = AggrFuncNames.sum;
+			expr.aggregate_operation = AggrFuncNames.sum;
 			break;
 		case "avg":
-			expr.aggregate_operations = AggrFuncNames.average;
+			expr.aggregate_operation = AggrFuncNames.average;
 			break;
 		case "cnt":
-			expr.aggregate_operations = AggrFuncNames.count;
+			expr.aggregate_operation = AggrFuncNames.count;
 			break;
 		case "min":
 			throw new SemanticErrorException("aggrFunc \"min\"currently not supported");
@@ -181,10 +181,11 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.retSchema = expr.aggregate_projection.retSchema;
 		if(expr.retSchema.type != JsonValueType.ARRAY)
 			throw new SemanticErrorException("expecting array input type");
-		if(expr.aggregate_operations == AggrFuncNames.sum || expr.aggregate_operations == AggrFuncNames.average){
+		if(expr.aggregate_operation == AggrFuncNames.sum || expr.aggregate_operation == AggrFuncNames.average){
 			if(expr.retSchema.items.type != JsonValueType.NUMBER && expr.retSchema.items.type != JsonValueType.INTEGER)
 				throw new SemanticErrorException("expecting array of number or integer");
-			else expr.retSchema = expr.retSchema.items;
+			else if(expr.aggregate_operation == AggrFuncNames.sum) expr.retSchema = expr.retSchema.items;
+			else expr.retSchema = new JsonSchema(JsonValueType.NUMBER);
 		}
 		else{
 			expr.retSchema = new JsonSchema(JsonValueType.INTEGER);
