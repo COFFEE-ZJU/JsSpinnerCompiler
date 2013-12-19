@@ -42,7 +42,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	@Override 
     public JsonExpression visitVar(JaqlGrammarParser.VarContext ctx) { 
 		JsonExpression expr = new JsonExpression();
-		expr.type = "id";
+		expr.expression_type = "id";
 		int i,nestTimes=0,schPos;
 		if(ctx.idWithArray(0).identifier().dollar == null){
 			String rename = ctx.idWithArray(0).identifier().getText();
@@ -159,7 +159,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	@Override
 	public JsonExpression visitAggrFunc(JaqlGrammarParser.AggrFuncContext ctx) {
 		JsonExpression expr = new JsonExpression();
-		expr.type = "aggregation";
+		expr.expression_type = "aggregation";
 		switch (ctx.aggrFuncName().getText()) {
 		case "sum":
 			expr.aggregate_operation = AggrFuncNames.sum;
@@ -199,13 +199,13 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		switch (ctx.op.getText()) {
 		case "*":
-			expr.type = "mul";
+			expr.expression_type = "mul";
 			break;
 		case "/":
-			expr.type = "div";
+			expr.expression_type = "div";
 			break;
 		case "%":
-			expr.type = "mod";
+			expr.expression_type = "mod";
 			break;
 		default:
 			break;
@@ -213,7 +213,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.left = visit(ctx.exprs(0));
 		expr.right = visit(ctx.exprs(1));
 		
-		if(expr.type.equals("mod") && (expr.left.retSchema.type != JsonValueType.INTEGER || expr.right.retSchema.type != JsonValueType.INTEGER) )
+		if(expr.expression_type.equals("mod") && (expr.left.retSchema.type != JsonValueType.INTEGER || expr.right.retSchema.type != JsonValueType.INTEGER) )
 			throw new SemanticErrorException("mod only support integers");
 		
 		if((expr.left.retSchema.type != JsonValueType.INTEGER && expr.left.retSchema.type != JsonValueType.NUMBER) ||
@@ -233,10 +233,10 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		switch (ctx.op.getText()) {
 		case "+":
-			expr.type = "add";
+			expr.expression_type = "add";
 			break;
 		case "-":
-			expr.type = "sub";
+			expr.expression_type = "sub";
 			break;
 		default:
 			break;
@@ -259,7 +259,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	@Override 
 	public JsonExpression visitExprIntLabel(JaqlGrammarParser.ExprIntLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
-		expr.type = "int";
+		expr.expression_type = "int";
 		expr.int_value = Integer.parseInt(ctx.INT().getText());
 		expr.retSchema.type = JsonValueType.INTEGER;
 		
@@ -269,7 +269,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	@Override 
 	public JsonExpression visitExprBoolLabel(JaqlGrammarParser.ExprBoolLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
-		expr.type = "bool";
+		expr.expression_type = "bool";
 		if(ctx.TRUE() != null) expr.bool_value = true;
 		else expr.bool_value = false;
 		
@@ -281,7 +281,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	@Override 
 	public JsonExpression visitExprNullLabel(JaqlGrammarParser.ExprNullLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
-		expr.type = "null";
+		expr.expression_type = "null";
 		expr.retSchema.type = JsonValueType.NULL;
 		
 		return expr; 
@@ -290,7 +290,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	@Override 
 	public JsonExpression visitExprStringLabel(JaqlGrammarParser.ExprStringLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
-		expr.type = "string";
+		expr.expression_type = "string";
 		expr.string_value = ctx.STRING().getText().replaceAll("\"", "");
 		expr.retSchema.type = JsonValueType.STRING;
 		return expr; 

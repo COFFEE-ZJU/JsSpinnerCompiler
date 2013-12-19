@@ -23,7 +23,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondAndLabel(JaqlGrammarParser.CondAndLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.op = "and";
+		cond.condition_type = "and";
 		cond.left_condition = visit(ctx.conditions(0));
 		cond.right_condition = visit(ctx.conditions(1));
 		return cond; 
@@ -32,7 +32,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondOrLabel(JaqlGrammarParser.CondOrLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.op = "or";
+		cond.condition_type = "or";
 		cond.left_condition = visit(ctx.conditions(0));
 		cond.right_condition = visit(ctx.conditions(1));
 		return cond; 
@@ -41,7 +41,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondNegLabel(JaqlGrammarParser.CondNegLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.op = "neg";
+		cond.condition_type = "neg";
 		cond.condition = visit(ctx.conditions());
 		return cond; 
 	}
@@ -55,7 +55,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondVarLabel(JaqlGrammarParser.CondVarLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.op = "bool";
+		cond.condition_type = "bool";
 		cond.bool_expression = new ExprVisitor(haveDollar, renameId, prevSchema).visit(ctx.var());
 		if(cond.bool_expression.retSchema.type != JsonValueType.BOOLEAN)
 			throw new SemanticErrorException("attribute "+cond.bool_expression.id_name+" is not boolean type");
@@ -70,27 +70,27 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 		String comp = ctx.comprator().getText();
 		switch (comp) {
 		case "<":
-			cond.op = "lt";
+			cond.condition_type = "lt";
 			break;
 			
 		case "<=":
-			cond.op = "le";
+			cond.condition_type = "le";
 			break;
 
 		case "==":
-			cond.op = "eq";
+			cond.condition_type = "eq";
 			break;
 
 		case ">=":
-			cond.op = "ge";
+			cond.condition_type = "ge";
 			break;
 
 		case ">":
-			cond.op = "gt";
+			cond.condition_type = "gt";
 			break;
 
 		case "!=":
-			cond.op = "ne";
+			cond.condition_type = "ne";
 			break;
 
 		default:
@@ -105,7 +105,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 		if((let != JsonValueType.INTEGER && let != JsonValueType.NUMBER)
 				|| (ret != JsonValueType.INTEGER && ret != JsonValueType.NUMBER)){
 			
-			switch (cond.op) {
+			switch (cond.condition_type) {
 			case "eq":
 			case "ne":
 				if(let == JsonValueType.NULL || ret == JsonValueType.NULL) break;

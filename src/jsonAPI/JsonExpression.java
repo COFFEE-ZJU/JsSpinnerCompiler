@@ -11,7 +11,8 @@ import constants.Constants.JsonAttrSource;
 
 
 public class JsonExpression {
-	@Expose public String type = null;		//id, int, bool, null, string, add, sub, div, mul, mod, aggregation;
+	@Expose public String type = "expression";
+	@Expose public String expression_type = null;		//id, int, bool, null, string, add, sub, div, mul, mod, aggregation;
 	@Expose public AggrFuncNames aggregate_operation = null;
 	@Expose public JsonProjection aggregate_projection = null;
 	@Expose public JsonExpression left = null;
@@ -26,7 +27,7 @@ public class JsonExpression {
 	public boolean lastNameIsArray = true;		//for id type only
 	
 	public String getLastIdName(){
-		if(! type.equals("id")) throw new SemanticErrorException("expression is not id type");
+		if(! expression_type.equals("id")) throw new SemanticErrorException("expression is not id type");
 		if(lastNameIsArray) throw new SemanticErrorException("need a field name");
 		if(id_name.size()==0) return "";
 		else return (String)id_name.get(id_name.size()-1);
