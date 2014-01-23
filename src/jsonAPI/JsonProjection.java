@@ -9,7 +9,7 @@ import com.google.gson.annotations.Expose;
 import constants.Constants.JsonProjectionType;
 
 public class JsonProjection {
-	@Expose public String type = "projection";
+	@Expose public String type = "projection_obj";
 	@Expose public Boolean need_rename = null;
 	@Expose public String rename = null;
 	@Expose public JsonProjectionType projection_type = null;

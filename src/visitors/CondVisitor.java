@@ -41,7 +41,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondNegLabel(JaqlGrammarParser.CondNegLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.condition_type = "neg";
+		cond.condition_type = "not";
 		cond.condition = visit(ctx.conditions());
 		return cond; 
 	}
