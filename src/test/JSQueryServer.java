@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class JSQueryServer {
-	public static final int SEND_PORT = 3000;
+	public static final int SEND_PORT = constants.Constants.LISTEN_PORT;
 	
 	class ExecThread extends Thread{
 		String queryFileName;

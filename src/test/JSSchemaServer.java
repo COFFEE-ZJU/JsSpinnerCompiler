@@ -10,7 +10,7 @@ import java.net.Socket;
 import com.google.gson.Gson;
 
 public class JSSchemaServer {
-	public static final int LISTEN_PORT = 2048;
+	public static final int LISTEN_PORT = constants.Constants.SEND_JSSPINNER_PORT;
 	
 	class JsonSchemaQuery{
 		String type;
