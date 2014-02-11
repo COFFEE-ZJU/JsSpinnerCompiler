@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import constants.Constants;
+import constants.SyntaxErrorException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,14 +63,22 @@ public class Run {
 				byte[] b = new byte[Constants.INPUT_STREAM_LENGTH];
 				int len = in.read(b);
 				
-				ANTLRInputStream input = new ANTLRInputStream(new String(b,0,len));
-		        JaqlGrammarLexer lexer = new JaqlGrammarLexer(input);
-		        CommonTokenStream tokens = new CommonTokenStream(lexer);
-		        JaqlGrammarParser parser = new JaqlGrammarParser(tokens);
-		        ParseTree tree = parser.prog(); // parse
-
-		        JaqlVisitor eval = new JaqlVisitor();
-		        eval.visit(tree);
+				JaqlVisitor eval = new JaqlVisitor();
+				try{
+					ANTLRInputStream input = new ANTLRInputStream(new String(b,0,len));
+			        BailJaqlGrammarLexer lexer = new BailJaqlGrammarLexer(input);
+			        CommonTokenStream tokens = new CommonTokenStream(lexer);
+			        JaqlGrammarParser parser = new JaqlGrammarParser(tokens);
+			        parser.removeErrorListeners();
+			        parser.addErrorListener(new ErrorListener());
+			        //parser.setErrorHandler(new BailErrorStrategy());
+			        ParseTree tree = parser.prog(); // parse
+	
+			        eval.visit(tree);
+				} catch (SyntaxErrorException e) {
+					eval.genErrorTree(e);
+					//e.printStackTrace();
+				}
 		        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		        out.write(gson.toJson(eval.resultTrees).getBytes());
 		        out.flush();
