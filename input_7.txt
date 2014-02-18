@@ -1,0 +1,8 @@
+streamT = readFromWrapper ("testSchema2", true) ;
+
+stream2 = readFromWrapper ("testSchema", true) ;
+
+streamT;
+
+stream2;
+

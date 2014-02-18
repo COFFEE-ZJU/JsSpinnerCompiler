@@ -10,7 +10,7 @@ stat:	pipe ';'
         |   assignView ';'
         |   readStream ';'
         |   identifier ';'
-        |   NEWLINE
+//        |   NEWLINE
 	;
 
 readStream: identifier '=' 'readFromWrapper' '(' STRING ',' (TRUE|FALSE) ')'
@@ -122,5 +122,5 @@ NULL: 'null';
 ID  :   ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 INT :   '0'..'9'+ ;
 STRING: '"' .*? '"';
-NEWLINE:'\r'? '\n' ;
+//NEWLINE:'\r'? '\n' ;
 WS  :   (' '|'\t'|'\n'|'\r')+ {skip();} ;

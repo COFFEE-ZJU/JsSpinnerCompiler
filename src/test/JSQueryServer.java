@@ -26,7 +26,7 @@ public class JSQueryServer {
 				StringBuffer outString = new StringBuffer();
 				String tmp;
 				while((tmp = reader.readLine()) != null){
-					outString.append(tmp);
+					outString.append(tmp).append(" ");
 				}
 				out.write(outString.toString().getBytes());
 				out.flush();
