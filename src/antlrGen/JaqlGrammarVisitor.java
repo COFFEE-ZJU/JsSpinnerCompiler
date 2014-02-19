@@ -80,6 +80,8 @@ public interface JaqlGrammarVisitor<T> extends ParseTreeVisitor<T> {
 
 	T visitObjectGen(JaqlGrammarParser.ObjectGenContext ctx);
 
+	T visitExprFloatLabel(JaqlGrammarParser.ExprFloatLabelContext ctx);
+
 	T visitFilterLabel(JaqlGrammarParser.FilterLabelContext ctx);
 
 	T visitWindowPartitionLabel(JaqlGrammarParser.WindowPartitionLabelContext ctx);

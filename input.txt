@@ -1,9 +1,9 @@
-stream1 = readFromWrapper ("testS", true) ;
-stream2 = readFromWrapper ("testT", true) ;
-tmp1 = stream1 -> window[rows 2];
-tmp2 = stream2 -> window[rows 3];
-j = join d in tmp1,
- preserve s in tmp2
-where s.id == d.id
-into {s.id, d.num};
-j ->istream;
+stream1 = readFromWrapper ("stream1", true) ;
+stream2 = readFromWrapper ("stream2", true) ;
+tmp1 = stream1 -> window[rows 2] ->  transform {$.id,$.student.age};
+tmp2 = stream2 -> window[rows 3] ->  filter $.score >= 60.0;
+j = join s in tmp1,
+         d in tmp2
+    where s.id == d.id
+    into {s.age, d.score};
+j -> istream;

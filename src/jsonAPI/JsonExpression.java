@@ -12,7 +12,7 @@ import constants.Constants.JsonAttrSource;
 
 public class JsonExpression {
 	@Expose public String type = "expression_obj";
-	@Expose public String expression_type = null;		//id, int, bool, null, string, add, sub, div, mul, mod, aggregation;
+	@Expose public String expression_type = null;		//id, int, number, bool, null, string, add, sub, div, mul, mod, aggregation;
 	@Expose public AggrFuncNames aggregate_operation = null;
 	@Expose public JsonProjection aggregate_projection = null;
 	@Expose public JsonExpression left = null;
@@ -20,6 +20,7 @@ public class JsonExpression {
 	@Expose public List<Object> id_name = null;
 	@Expose public String string_value = null;
 	@Expose public Integer int_value = null;
+	@Expose public Double number_value = null;
 	@Expose public Boolean bool_value = null;
 	@Expose public JsonAttrSource attribute_source = null;		//for join operation only
 	

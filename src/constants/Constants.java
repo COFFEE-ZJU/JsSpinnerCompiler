@@ -8,7 +8,35 @@ public class Constants {
 	public static final int INPUT_STREAM_LENGTH = 1024;
 	public static final int SEND_JSSPINNER_PORT = 2048;
 	public static final int LISTEN_PORT = 3000;
-	public static String JSSPINNER_HOST = "localhost";
+	public static final String JSSPINNER_HOST = "localhost";
+	
+	public static class JsonExprType {
+		public static final String ID = "id";
+		public static final String INT = "int";
+		public static final String NUMBER = "number";
+		public static final String BOOL = "bool";
+		public static final String NULL = "null";
+		public static final String STRING = "string";
+		public static final String ADD = "add";
+		public static final String SUB = "sub";
+		public static final String DIV = "div";
+		public static final String MUL = "mul";
+		public static final String MOD = "mod";
+		public static final String AGGREGATION = "aggregation";
+	}
+	
+	public static class JsonConditionType {	//and, or, not, gt, ge, lt, le, eq, ne, bool
+		public static final String AND = "and";
+		public static final String OR = "or";
+		public static final String NOT = "not";
+		public static final String GT = "gt";
+		public static final String GE = "ge";
+		public static final String LT = "lt";
+		public static final String LE = "le";
+		public static final String EQ = "eq";
+		public static final String NE = "ne";
+		public static final String BOOL = "bool";
+	}
 	
 	public static enum JsonValueType{ARRAY, BOOLEAN, INTEGER, NUMBER, NULL, OBJECT, STRING};
 	public static enum JsonProjectionType{object, array, direct};

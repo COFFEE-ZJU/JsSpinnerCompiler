@@ -90,6 +90,7 @@ exprs: exprs op=('*'|'/'|'%') exprs                                             
      |  exprs op=('+'|'-') exprs                                                #exprAddSubLabel
      |  var                                                                     #exprVarLabel
      |  INT                                                                     #exprIntLabel
+     |  FLOAT                                                                   #exprFloatLabel
      |  (TRUE | FALSE)                                                          #exprBoolLabel
      |  NULL                                                                    #exprNullLabel
      |  STRING                                                                  #exprStringLabel
@@ -121,6 +122,7 @@ FALSE:  'false';
 NULL: 'null';
 ID  :   ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 INT :   '0'..'9'+ ;
+FLOAT : INT '.' INT ;
 STRING: '"' .*? '"';
 //NEWLINE:'\r'? '\n' ;
 WS  :   (' '|'\t'|'\n'|'\r')+ {skip();} ;

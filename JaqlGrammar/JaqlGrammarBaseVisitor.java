@@ -80,6 +80,8 @@ public class JaqlGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 
 	@Override public T visitObjectGen(JaqlGrammarParser.ObjectGenContext ctx) { return visitChildren(ctx); }
 
+	@Override public T visitExprFloatLabel(JaqlGrammarParser.ExprFloatLabelContext ctx) { return visitChildren(ctx); }
+
 	@Override public T visitFilterLabel(JaqlGrammarParser.FilterLabelContext ctx) { return visitChildren(ctx); }
 
 	@Override public T visitWindowPartitionLabel(JaqlGrammarParser.WindowPartitionLabelContext ctx) { return visitChildren(ctx); }

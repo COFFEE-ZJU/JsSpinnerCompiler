@@ -1,0 +1,16 @@
+{"id": "stream1",
+           "type":"object",
+           "properties": {
+                           "id":{
+                                   "type": "string"
+                                 },       
+                           "student":
+                                 {
+                                    "type":"object",
+                                    "properties":{
+                                                     "age":{                                                                        "type":"number"
+                                                          }
+                                                  }
+                                 }
+                           }
+           }
