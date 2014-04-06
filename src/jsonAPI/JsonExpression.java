@@ -24,7 +24,7 @@ public class JsonExpression {
 	@Expose public Boolean bool_value = null;
 	@Expose public JsonAttrSource attribute_source = null;		//for join operation only
 	
-	public JsonSchema retSchema = new JsonSchema();
+	@Expose public JsonSchema retSchema = new JsonSchema();
 	public boolean lastNameIsArray = true;		//for id type only
 	
 	public String getLastIdName(){

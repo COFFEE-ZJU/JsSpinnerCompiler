@@ -10,6 +10,14 @@ public class Constants {
 	public static final int LISTEN_PORT = 3000;
 	public static final String JSSPINNER_HOST = "localhost";
 	
+	public static class WindowUnit {
+		public static final String NOW = "now";
+		public static final String UNBOUNDED = "unbounded";
+		public static final String SECONDS = "seconds";
+		public static final String MINUTES = "minutes";
+		public static final String HOURS = "hours";
+		public static final String DAYS = "days";
+	}
 	public static class JsonExprType {
 		public static final String ID = "id";
 		public static final String INT = "int";

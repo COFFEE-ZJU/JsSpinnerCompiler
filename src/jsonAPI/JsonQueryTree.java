@@ -30,6 +30,6 @@ public class JsonQueryTree {
 	
 	@Expose public String error_message = null;
 	
-	public JsonSchema schema = null;
+	@Expose public JsonSchema schema = null;
 	public DataType dataType = null;
 }

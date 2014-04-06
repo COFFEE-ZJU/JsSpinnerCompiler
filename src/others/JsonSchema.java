@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 import constants.Constants;
 import constants.Constants.*;
@@ -31,9 +32,9 @@ public class JsonSchema {
 		SchemaFormat items;
 	}
 	
-	public JsonValueType type = null; 	//can be any type
-	public JsonSchema items = null;				//for array type only
-	public Map<String, JsonSchema> nameToSchema = new HashMap<String, JsonSchema>();	//for object type only
+	@Expose public JsonValueType type = null; 	//can be any type
+	@Expose public JsonSchema items = null;				//for array type only
+	@Expose public Map<String, JsonSchema> nameToSchema = new HashMap<String, JsonSchema>();	//for object type only
 	
 //	Map<String, JsonValueType> nameToType = new HashMap<String, JsonValueType>();
 //	Map<String, JsonSchema> objectNameToSchema = new HashMap<String, JsonSchema>();

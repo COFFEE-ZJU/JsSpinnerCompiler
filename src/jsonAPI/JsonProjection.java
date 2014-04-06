@@ -17,5 +17,5 @@ public class JsonProjection {
 	@Expose public List<JsonProjection> array_items = null;		//for array type
 	@Expose public JsonExpression expression = null;		//for primitive type
 	
-	public JsonSchema retSchema = new JsonSchema();
+	@Expose public JsonSchema retSchema = new JsonSchema();
 }

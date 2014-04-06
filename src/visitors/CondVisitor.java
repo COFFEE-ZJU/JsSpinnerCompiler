@@ -118,6 +118,8 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 			case JsonConditionType.GT:
 			case JsonConditionType.GE:
 				if(let != ret) throw new SemanticErrorException("comparision type mismatch");
+				if(let != JsonValueType.INTEGER && let != JsonValueType.NUMBER && let != JsonValueType.STRING)
+					throw new SemanticErrorException("comparision type: "+let+"not allowed");
 				break;
 			default:
 				break;
