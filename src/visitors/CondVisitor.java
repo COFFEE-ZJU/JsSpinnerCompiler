@@ -23,7 +23,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondAndLabel(JaqlGrammarParser.CondAndLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.condition_type = JsonConditionType.AND;
+		cond.condition_type = JsonCondType.AND;
 		cond.left_condition = visit(ctx.conditions(0));
 		cond.right_condition = visit(ctx.conditions(1));
 		return cond; 
@@ -32,7 +32,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondOrLabel(JaqlGrammarParser.CondOrLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.condition_type = JsonConditionType.OR;
+		cond.condition_type = JsonCondType.OR;
 		cond.left_condition = visit(ctx.conditions(0));
 		cond.right_condition = visit(ctx.conditions(1));
 		return cond; 
@@ -41,7 +41,7 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondNegLabel(JaqlGrammarParser.CondNegLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.condition_type = JsonConditionType.NOT;
+		cond.condition_type = JsonCondType.NOT;
 		cond.condition = visit(ctx.conditions());
 		return cond; 
 	}
@@ -55,9 +55,9 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 	@Override 
 	public JsonCondition visitCondVarLabel(JaqlGrammarParser.CondVarLabelContext ctx) { 
 		JsonCondition cond = new JsonCondition();
-		cond.condition_type = JsonConditionType.BOOL;
+		cond.condition_type = JsonCondType.BOOL;
 		cond.bool_expression = new ExprVisitor(haveDollar, renameId, prevSchema).visit(ctx.var());
-		if(cond.bool_expression.retSchema.type != JsonValueType.BOOLEAN)
+		if(cond.bool_expression.retSchema.getType() != JsonValueType.BOOLEAN)
 			throw new SemanticErrorException("attribute "+cond.bool_expression.id_name+" is not boolean type");
 		
 		return cond; 
@@ -70,27 +70,27 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 		String comp = ctx.comprator().getText();
 		switch (comp) {
 		case "<":
-			cond.condition_type = JsonConditionType.LT;
+			cond.condition_type = JsonCondType.LT;
 			break;
 			
 		case "<=":
-			cond.condition_type = JsonConditionType.LE;
+			cond.condition_type = JsonCondType.LE;
 			break;
 
 		case "==":
-			cond.condition_type = JsonConditionType.EQ;
+			cond.condition_type = JsonCondType.EQ;
 			break;
 
 		case ">=":
-			cond.condition_type = JsonConditionType.GE;
+			cond.condition_type = JsonCondType.GE;
 			break;
 
 		case ">":
-			cond.condition_type = JsonConditionType.GT;
+			cond.condition_type = JsonCondType.GT;
 			break;
 
 		case "!=":
-			cond.condition_type = JsonConditionType.NE;
+			cond.condition_type = JsonCondType.NE;
 			break;
 
 		default:
@@ -99,28 +99,27 @@ public class CondVisitor extends JaqlGrammarBaseVisitor<JsonCondition> {
 
 		cond.left_expression = new ExprVisitor(haveDollar, renameId, prevSchema).visit(ctx.exprs(0));
 		cond.right_expression = new ExprVisitor(haveDollar, renameId, prevSchema).visit(ctx.exprs(1));
-		JsonValueType let = cond.left_expression.retSchema.type;
-		JsonValueType ret = cond.right_expression.retSchema.type;
+		JsonValueType let = cond.left_expression.retSchema.getType();
+		JsonValueType ret = cond.right_expression.retSchema.getType();
 		
 		if((let != JsonValueType.INTEGER && let != JsonValueType.NUMBER)
 				|| (ret != JsonValueType.INTEGER && ret != JsonValueType.NUMBER)){
 			
 			switch (cond.condition_type) {
-			case JsonConditionType.EQ:
-			case JsonConditionType.NE:
+			case EQ:
+			case NE:
 				if(let == JsonValueType.NULL || ret == JsonValueType.NULL) break;
 				
 				if(! cond.left_expression.retSchema.equals(cond.right_expression.retSchema))
 					throw new SemanticErrorException("comparision type mismatch");
 				break;
-			case JsonConditionType.LT:
-			case JsonConditionType.LE:
-			case JsonConditionType.GT:
-			case JsonConditionType.GE:
+			case LT:
+			case LE:
+			case GT:
+			case GE:
 				if(let != ret) throw new SemanticErrorException("comparision type mismatch");
 				if(let != JsonValueType.INTEGER && let != JsonValueType.NUMBER && let != JsonValueType.STRING)
 					throw new SemanticErrorException("comparision type: "+let+"not allowed");
-				break;
 			default:
 				break;
 			}

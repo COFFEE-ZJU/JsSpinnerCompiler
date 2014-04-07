@@ -1,6 +1,7 @@
 package visitors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import jsonAPI.JsonProjection;
 import others.JsonSchema;
@@ -58,7 +59,7 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 		JsonProjection proj = new JsonProjection();
 		proj.projection_type = JsonProjectionType.array;
 		proj.array_items = new ArrayList<JsonProjection>();
-		proj.retSchema.type = JsonValueType.ARRAY;
+		proj.retSchema.setType(JsonValueType.ARRAY);
 		
 		int i;
 		JsonProjection tmpProj;
@@ -79,22 +80,23 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 	public JsonProjection visitObjectGen(JaqlGrammarParser.ObjectGenContext ctx) {
 		JsonProjection proj = new JsonProjection();
 		proj.projection_type = JsonProjectionType.object;
-		proj.fields = new ArrayList<JsonProjection>();
-		proj.retSchema.type = JsonValueType.OBJECT;
+		proj.fields = new HashMap<String, JsonProjection>();
+		proj.retSchema.setType(JsonValueType.OBJECT);
 		
 		int i;
 		JsonProjection tmpProj;
 		for(i=0;i<ctx.field().size();i++){
 			tmpProj = visit(ctx.field(i));
-			if(tmpProj.need_rename == false){
-				checkDuplication(proj.retSchema, tmpProj.expression.getLastIdName());
-				proj.retSchema.nameToSchema.put(tmpProj.expression.getLastIdName(), tmpProj.retSchema);
-			}
-			else{
-				checkDuplication(proj.retSchema, tmpProj.rename);
-				proj.retSchema.nameToSchema.put(tmpProj.rename, tmpProj.retSchema);
-			}
-			proj.fields.add(tmpProj);
+			String name;
+			if(tmpProj.need_rename == false)
+				name = tmpProj.expression.getLastIdName();
+			else
+				name = tmpProj.rename;
+
+			
+			checkDuplication(proj.retSchema, name);
+			proj.retSchema.properties.put(name, tmpProj.retSchema);
+			proj.fields.put(name, tmpProj);
 		}
 		
 		return proj; 
@@ -120,7 +122,7 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 	}
 	
 	private void checkDuplication(JsonSchema schema, String id){
-		if(schema.nameToSchema.containsKey(id))
+		if(schema.properties.containsKey(id))
 			throw new SemanticErrorException("variable "+id+" duplicated");
 	}
 }

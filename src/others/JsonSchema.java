@@ -32,9 +32,20 @@ public class JsonSchema {
 		SchemaFormat items;
 	}
 	
-	@Expose public JsonValueType type = null; 	//can be any type
+	@Expose public String type = null;
+	private JsonValueType valueType = null; 	//can be any type
 	@Expose public JsonSchema items = null;				//for array type only
-	@Expose public Map<String, JsonSchema> nameToSchema = new HashMap<String, JsonSchema>();	//for object type only
+	@Expose public Map<String, JsonSchema> properties = new HashMap<String, JsonSchema>();	//for object type only
+	
+	public JsonValueType getType(){
+		if(valueType == null) valueType = Constants.stringToJsonValueType.get(type);
+		
+		return valueType;
+	}
+	public void setType(JsonValueType type){
+		valueType = type;
+		this.type = valueType.toString().toLowerCase();
+	}
 	
 //	Map<String, JsonValueType> nameToType = new HashMap<String, JsonValueType>();
 //	Map<String, JsonSchema> objectNameToSchema = new HashMap<String, JsonSchema>();
@@ -42,11 +53,12 @@ public class JsonSchema {
 	
 	public JsonSchema(){}
 	public JsonSchema(JsonValueType type){
-		this.type = type;
+		setType(type);
 	}
 	public JsonSchema(JsonSchema schema){
-		this.type = schema.type;
-		this.nameToSchema = new HashMap<String, JsonSchema>(schema.nameToSchema);
+		schema.getType();
+		setType(schema.valueType);
+		this.properties = new HashMap<String, JsonSchema>(schema.properties);
 		if(schema.items != null) this.items = new JsonSchema(schema.items);
 		
 //		this.nameToType = new HashMap<String, JsonValueType>(schema.nameToType);
@@ -63,6 +75,7 @@ public class JsonSchema {
 //		s.nameToType.put("name", JsonValueType.STRING);
 		
 		Object o;
+		String jsonString;
 		JsonSchemaQuery query = new JsonSchemaQuery(wrapperName);
 		try {
 			Socket socket = new Socket(Constants.JSSPINNER_HOST, Constants.SEND_JSSPINNER_PORT);
@@ -77,7 +90,7 @@ public class JsonSchema {
 			byte[] resB = new byte[Constants.INPUT_STREAM_LENGTH];
 			
 			int len = in.read(resB);
-			String jsonString = new String(resB,0,len);
+			jsonString = new String(resB,0,len);
 			socket.close();
 			o = new Gson().fromJson(jsonString, Object.class);
 		} catch (Exception e) {
@@ -86,12 +99,13 @@ public class JsonSchema {
 		}
 		
 		//System.out.println(parseSchema(toSchemaFormat(o)));
-		return parseSchema(toSchemaFormat(o));
+		//return parseSchema(toSchemaFormat(o));
+		return new Gson().fromJson(jsonString, JsonSchema.class);
 	}
 	
 	private static JsonSchema parseSchema(SchemaFormat sf){
 		JsonSchema js = new JsonSchema();
-		js.type = sf.type;
+		js.valueType = sf.type;
 		if(sf.type == JsonValueType.ARRAY){
 			js.items = parseSchema(sf.items);
 		}
@@ -104,7 +118,7 @@ public class JsonSchema {
 				ent = it.next();
 				//System.out.println(ent.getKey());
 				tempsf = toSchemaFormat(ent.getValue());
-				js.nameToSchema.put(ent.getKey(), parseSchema(tempsf));
+				js.properties.put(ent.getKey(), parseSchema(tempsf));
 //				if(type == JsonValueType.OBJECT) s.objectNameToSchema.put(ent.getKey(), parseSchema(sf.properties));
 //				else if(type == JsonValueType.ARRAY){
 //					SchemaFormat sf2 = (SchemaFormat)sf.items;
@@ -152,22 +166,22 @@ public class JsonSchema {
 	}
 	
 	public boolean equals(JsonSchema schema){
-		if((this.type == JsonValueType.INTEGER || this.type == JsonValueType.NUMBER) &&
-			(schema.type == JsonValueType.INTEGER || schema.type == JsonValueType.NUMBER))
+		if((this.valueType == JsonValueType.INTEGER || this.valueType == JsonValueType.NUMBER) &&
+			(schema.valueType == JsonValueType.INTEGER || schema.valueType == JsonValueType.NUMBER))
 			return true;
 		
-		if(this.type != schema.type) return false;
+		if(this.valueType != schema.valueType) return false;
 		
-		if(this.type == JsonValueType.ARRAY) return this.items.equals(schema.items);
+		if(this.valueType == JsonValueType.ARRAY) return this.items.equals(schema.items);
 		
-		if(this.type == JsonValueType.OBJECT){
-			if(this.nameToSchema.size() != schema.nameToSchema.size()) return false;
+		if(this.valueType == JsonValueType.OBJECT){
+			if(this.properties.size() != schema.properties.size()) return false;
 			Entry<String, JsonSchema> ent;
-			Iterator<Entry<String, JsonSchema> > it = this.nameToSchema.entrySet().iterator();
+			Iterator<Entry<String, JsonSchema> > it = this.properties.entrySet().iterator();
 			while(it.hasNext()){
 				ent = it.next();
-				if(! schema.nameToSchema.containsKey(ent.getKey())) return false;
-				if(! ent.getValue().equals(schema.nameToSchema.get(ent.getKey()))) return false;
+				if(! schema.properties.containsKey(ent.getKey())) return false;
+				if(! ent.getValue().equals(schema.properties.get(ent.getKey()))) return false;
 			}
 			
 			return true;

@@ -83,8 +83,8 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		else expr.lastNameIsArray = true;
 		
 		if(ctx.idWithArray().size() > 1 ){
-			if(tmpSch.type != JsonValueType.OBJECT)
-				throw new SemanticErrorException("variable "+ctx.idWithArray(0).identifier().getText()+"'s type is mismatched");
+			if(tmpSch.getType() != JsonValueType.OBJECT)
+				throw new SemanticErrorException("variable "+ctx.idWithArray(0).identifier().getText()+"'s type is mismatched" + tmpSch.getType());
 		}
 		nestTimes += dealWithIdWithArrays(expr, ctx.idWithArray().subList(1, ctx.idWithArray().size()), tmpSch);
 		
@@ -117,7 +117,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 			tmpString = ctxs.get(i).identifier().getText();
 			checkAttrContaining(tmpSch, tmpString);
 			expr.id_name.add(tmpString);
-			tmpSch = tmpSch.nameToSchema.get(tmpString);
+			tmpSch = tmpSch.properties.get(tmpString);
 			for(j=0;j<arrays.size();j++){
 				if(tmpSch.items == null)
 					throw new SemanticErrorException("attribute "+tmpString+"'s type is mismatched");
@@ -139,7 +139,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 				tmpSch = tmpSch.items;
 			}
 			
-			if(i != ctxs.size()-1 && tmpSch.type != JsonValueType.OBJECT)
+			if(i != ctxs.size()-1 && tmpSch.getType() != JsonValueType.OBJECT)
 				throw new SemanticErrorException("attribute "+tmpString+"'s type is mismatched");
 		}
 		
@@ -179,10 +179,10 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		}
 		expr.aggregate_projection = new ProjectionVisitor(haveDollar, renameIds, prevSchemas, opType).visit(ctx.jsonGen());
 		expr.retSchema = expr.aggregate_projection.retSchema;
-		if(expr.retSchema.type != JsonValueType.ARRAY)
+		if(expr.retSchema.getType() != JsonValueType.ARRAY)
 			throw new SemanticErrorException("expecting array input type");
 		if(expr.aggregate_operation == AggrFuncNames.sum || expr.aggregate_operation == AggrFuncNames.average){
-			if(expr.retSchema.items.type != JsonValueType.NUMBER && expr.retSchema.items.type != JsonValueType.INTEGER)
+			if(expr.retSchema.items.getType() != JsonValueType.NUMBER && expr.retSchema.items.getType() != JsonValueType.INTEGER)
 				throw new SemanticErrorException("expecting array of number or integer");
 			else if(expr.aggregate_operation == AggrFuncNames.sum) expr.retSchema = expr.retSchema.items;
 			else expr.retSchema = new JsonSchema(JsonValueType.NUMBER);
@@ -213,17 +213,17 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.left = visit(ctx.exprs(0));
 		expr.right = visit(ctx.exprs(1));
 		
-		if(expr.expression_type.equals(JsonExprType.MOD) && (expr.left.retSchema.type != JsonValueType.INTEGER || expr.right.retSchema.type != JsonValueType.INTEGER) )
+		if(expr.expression_type == JsonExprType.MOD && (expr.left.retSchema.getType() != JsonValueType.INTEGER || expr.right.retSchema.getType() != JsonValueType.INTEGER) )
 			throw new SemanticErrorException("mod only support integers");
 		
-		if((expr.left.retSchema.type != JsonValueType.INTEGER && expr.left.retSchema.type != JsonValueType.NUMBER) ||
-				(expr.right.retSchema.type != JsonValueType.INTEGER && expr.right.retSchema.type != JsonValueType.NUMBER))
+		if((expr.left.retSchema.getType() != JsonValueType.INTEGER && expr.left.retSchema.getType() != JsonValueType.NUMBER) ||
+				(expr.right.retSchema.getType() != JsonValueType.INTEGER && expr.right.retSchema.getType() != JsonValueType.NUMBER))
 			throw new SemanticErrorException("unsupported type for multiply/divide/mod"+expr.left.id_name);
 			
-		if(expr.left.retSchema.type == JsonValueType.INTEGER && expr.right.retSchema.type == JsonValueType.INTEGER)
-			expr.retSchema.type = JsonValueType.INTEGER;
+		if(expr.left.retSchema.getType() == JsonValueType.INTEGER && expr.right.retSchema.getType() == JsonValueType.INTEGER)
+			expr.retSchema.setType(JsonValueType.INTEGER);
 		else
-			expr.retSchema.type = JsonValueType.NUMBER;
+			expr.retSchema.setType(JsonValueType.NUMBER);
 		
 		return expr; 
 	}
@@ -244,14 +244,14 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.left = visit(ctx.exprs(0));
 		expr.right = visit(ctx.exprs(1));
 		
-		if((expr.left.retSchema.type != JsonValueType.INTEGER && expr.left.retSchema.type != JsonValueType.NUMBER) ||
-				(expr.right.retSchema.type != JsonValueType.INTEGER && expr.right.retSchema.type != JsonValueType.NUMBER))
+		if((expr.left.retSchema.getType() != JsonValueType.INTEGER && expr.left.retSchema.getType() != JsonValueType.NUMBER) ||
+				(expr.right.retSchema.getType() != JsonValueType.INTEGER && expr.right.retSchema.getType() != JsonValueType.NUMBER))
 			throw new SemanticErrorException("unsupported type for multiply/divide");
 		
-		if(expr.left.retSchema.type == JsonValueType.INTEGER && expr.right.retSchema.type == JsonValueType.INTEGER)
-			expr.retSchema.type = JsonValueType.INTEGER;
+		if(expr.left.retSchema.getType() == JsonValueType.INTEGER && expr.right.retSchema.getType() == JsonValueType.INTEGER)
+			expr.retSchema.setType(JsonValueType.INTEGER);
 		else
-			expr.retSchema.type = JsonValueType.NUMBER;
+			expr.retSchema.setType(JsonValueType.NUMBER);
 		
 		return expr; 
 	}
@@ -261,7 +261,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.INT;
 		expr.int_value = Integer.parseInt(ctx.INT().getText());
-		expr.retSchema.type = JsonValueType.INTEGER;
+		expr.retSchema.setType(JsonValueType.INTEGER);
 		
 		return expr; 
 	}
@@ -271,7 +271,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.NUMBER;
 		expr.number_value = Double.parseDouble(ctx.FLOAT().getText());
-		expr.retSchema.type = JsonValueType.NUMBER;
+		expr.retSchema.setType(JsonValueType.NUMBER);
 		return expr;
 	}
 	
@@ -282,7 +282,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		if(ctx.TRUE() != null) expr.bool_value = true;
 		else expr.bool_value = false;
 		
-		expr.retSchema.type = JsonValueType.BOOLEAN;
+		expr.retSchema.setType(JsonValueType.BOOLEAN);
 		
 		return expr;
 	}
@@ -291,7 +291,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	public JsonExpression visitExprNullLabel(JaqlGrammarParser.ExprNullLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.NULL;
-		expr.retSchema.type = JsonValueType.NULL;
+		expr.retSchema.setType(JsonValueType.NULL);
 		
 		return expr; 
 	}
@@ -301,7 +301,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.STRING;
 		expr.string_value = ctx.STRING().getText().replaceAll("\"", "");
-		expr.retSchema.type = JsonValueType.STRING;
+		expr.retSchema.setType(JsonValueType.STRING);
 		return expr; 
 	}
 	
@@ -330,7 +330,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	}
 	
 	private void checkAttrContaining(JsonSchema schema, String attrName){
-    	if(! schema.nameToSchema.containsKey(attrName))
+    	if(! schema.properties.containsKey(attrName))
     		throw new SemanticErrorException("attribute name "+attrName+" is not valid.");
     }
 }
