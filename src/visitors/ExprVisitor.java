@@ -246,7 +246,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		
 		if((expr.left.retSchema.getType() != JsonValueType.INTEGER && expr.left.retSchema.getType() != JsonValueType.NUMBER) ||
 				(expr.right.retSchema.getType() != JsonValueType.INTEGER && expr.right.retSchema.getType() != JsonValueType.NUMBER))
-			throw new SemanticErrorException("unsupported type for multiply/divide");
+			throw new SemanticErrorException("unsupported type for addition/subtraction");
 		
 		if(expr.left.retSchema.getType() == JsonValueType.INTEGER && expr.right.retSchema.getType() == JsonValueType.INTEGER)
 			expr.retSchema.setType(JsonValueType.INTEGER);
