@@ -1,5 +1,0 @@
-streamT = readFromWrapper ("testSchema", true) ;
-
-tmpv = streamT -> window[range now];
-
-tmpv -> expand $.another_object.tags -> istream;

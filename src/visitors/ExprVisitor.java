@@ -249,9 +249,9 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 			throw new SemanticErrorException("unsupported type for addition/subtraction");
 		
 		if(expr.left.retSchema.getType() == JsonValueType.INTEGER && expr.right.retSchema.getType() == JsonValueType.INTEGER)
-			expr.retSchema.setType(JsonValueType.INTEGER);
+			expr.retSchema = new JsonSchema(JsonValueType.INTEGER);
 		else
-			expr.retSchema.setType(JsonValueType.NUMBER);
+			expr.retSchema = new JsonSchema(JsonValueType.NUMBER);
 		
 		return expr; 
 	}
@@ -261,7 +261,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.INT;
 		expr.int_value = Integer.parseInt(ctx.INT().getText());
-		expr.retSchema.setType(JsonValueType.INTEGER);
+		expr.retSchema = new JsonSchema(JsonValueType.INTEGER);
 		
 		return expr; 
 	}
@@ -271,7 +271,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.NUMBER;
 		expr.number_value = Double.parseDouble(ctx.FLOAT().getText());
-		expr.retSchema.setType(JsonValueType.NUMBER);
+		expr.retSchema = new JsonSchema(JsonValueType.NUMBER);
 		return expr;
 	}
 	
@@ -282,7 +282,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		if(ctx.TRUE() != null) expr.bool_value = true;
 		else expr.bool_value = false;
 		
-		expr.retSchema.setType(JsonValueType.BOOLEAN);
+		expr.retSchema = new JsonSchema(JsonValueType.BOOLEAN);
 		
 		return expr;
 	}
@@ -291,7 +291,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 	public JsonExpression visitExprNullLabel(JaqlGrammarParser.ExprNullLabelContext ctx) {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.NULL;
-		expr.retSchema.setType(JsonValueType.NULL);
+		expr.retSchema = new JsonSchema(JsonValueType.NULL);
 		
 		return expr; 
 	}
@@ -301,7 +301,7 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.STRING;
 		expr.string_value = ctx.STRING().getText().replaceAll("\"", "");
-		expr.retSchema.setType(JsonValueType.STRING);
+		expr.retSchema = new JsonSchema(JsonValueType.STRING);
 		return expr; 
 	}
 	

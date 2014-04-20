@@ -59,7 +59,7 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 		JsonProjection proj = new JsonProjection();
 		proj.projection_type = JsonProjectionType.array;
 		proj.array_items = new ArrayList<JsonProjection>();
-		proj.retSchema.setType(JsonValueType.ARRAY);
+		proj.retSchema = new JsonSchema(JsonValueType.ARRAY);
 		
 		int i;
 		JsonProjection tmpProj;
@@ -81,7 +81,7 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 		JsonProjection proj = new JsonProjection();
 		proj.projection_type = JsonProjectionType.object;
 		proj.fields = new HashMap<String, JsonProjection>();
-		proj.retSchema.setType(JsonValueType.OBJECT);
+		proj.retSchema = new JsonSchema(JsonValueType.OBJECT);
 		
 		int i;
 		JsonProjection tmpProj;
