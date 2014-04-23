@@ -161,18 +161,18 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		JsonExpression expr = new JsonExpression();
 		expr.expression_type = JsonExprType.AGGREGATION;
 		switch (ctx.aggrFuncName().getText()) {
-		case "sum":
+		case AggrFuncNameString.SUM:
 			expr.aggregate_operation = AggrFuncNames.sum;
 			break;
-		case "avg":
+		case AggrFuncNameString.AVERAGE:
 			expr.aggregate_operation = AggrFuncNames.average;
 			break;
-		case "cnt":
+		case AggrFuncNameString.COUNT:
 			expr.aggregate_operation = AggrFuncNames.count;
 			break;
-		case "min":
+		case AggrFuncNameString.MIN:
 			throw new SemanticErrorException("aggrFunc \"min\"currently not supported");
-		case "max":
+		case AggrFuncNameString.MAX:
 			throw new SemanticErrorException("aggrFunc \"max\"currently not supported");
 		default:
 			break;
@@ -221,9 +221,9 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 			throw new SemanticErrorException("unsupported type for multiply/divide/mod"+expr.left.id_name);
 			
 		if(expr.left.retSchema.getType() == JsonValueType.INTEGER && expr.right.retSchema.getType() == JsonValueType.INTEGER)
-			expr.retSchema.setType(JsonValueType.INTEGER);
+			expr.retSchema = new JsonSchema(JsonValueType.INTEGER);
 		else
-			expr.retSchema.setType(JsonValueType.NUMBER);
+			expr.retSchema = new JsonSchema(JsonValueType.NUMBER);
 		
 		return expr; 
 	}

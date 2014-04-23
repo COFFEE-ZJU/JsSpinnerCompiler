@@ -41,8 +41,8 @@ public class Run {
     	while(true){
     		s = ss.accept();
     		threadPool.execute(new InterpretThread(s,threadNum));
+    		System.out.println("query arrived, thread "+threadNum+" started");
     		synchronized ((Object)threadNum) {
-    			System.out.println("query arrived, thread "+threadNum+" started");
 				threadNum ++;
 			}
     	}
@@ -72,7 +72,7 @@ public class Run {
 			        parser.removeErrorListeners();
 			        parser.addErrorListener(new ErrorListener());
 			        //parser.setErrorHandler(new BailErrorStrategy());
-			        ParseTree tree = parser.prog(); // parse
+			        ParseTree tree = parser.prog(); //parse
 	
 			        eval.visit(tree);
 				} catch (SyntaxErrorException e) {
@@ -86,8 +86,8 @@ public class Run {
 		        in.close();
 		        socket.close();
 		        
+		        System.out.println("query excuted, thread "+threadNo+" ended");
 		        synchronized ((Object)threadNum) {
-	    			System.out.println("query excuted, thread "+threadNo+" ended");
 					threadNum --;
 				}
 			} catch (IOException e) {

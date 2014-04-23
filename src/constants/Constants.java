@@ -14,6 +14,7 @@ public class Constants {
 	public static enum JsonCondType {AND, OR, NOT, GT, GE, LT, LE, EQ, NE, BOOL};
 	public static enum JsonValueType{ARRAY, BOOLEAN, INTEGER, NUMBER, NULL, OBJECT, STRING};
 	public static enum JsonProjectionType{object, array, direct};
+	public static enum ErrorType {SEMANTIC_ERROR, SYNTAX_ERROR};
 	
 	public static class WindowUnit {
 		public static final String NOW = "now";
@@ -22,6 +23,13 @@ public class Constants {
 		public static final String MINUTES = "minutes";
 		public static final String HOURS = "hours";
 		public static final String DAYS = "days";
+	}
+	public static class AggrFuncNameString {
+		public static final String COUNT = "count";
+		public static final String AVERAGE = "avg";
+		public static final String SUM = "sum";
+		public static final String MIN = "min";
+		public static final String MAX = "max";
 	}
 	
 	public static enum JsonAttrSource{left, right, group_key_var, group_array};

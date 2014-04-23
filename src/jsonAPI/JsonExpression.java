@@ -3,8 +3,11 @@ package jsonAPI;
 import java.util.List;
 
 import others.JsonSchema;
+
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
+import constants.Constants;
 import constants.Constants.JsonExprType;
 import constants.SemanticErrorException;
 import constants.Constants.AggrFuncNames;
@@ -33,6 +36,11 @@ public class JsonExpression {
 		if(lastNameIsArray) throw new SemanticErrorException("need a field name");
 		if(id_name.size()==0) return "";
 		else return (String)id_name.get(id_name.size()-1);
+	}
+	
+	@Override
+	public String toString(){
+		return new Gson().toJson(this);
 	}
 	
 //	Constants.JsonValueType retType = null;
