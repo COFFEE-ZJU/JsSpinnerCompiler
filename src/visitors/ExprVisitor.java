@@ -95,12 +95,12 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		}
 		
 		if(opType == OperationType.JOIN){
-			if(schPos == 0) expr.attribute_source = JsonAttrSource.left;
-			else expr.attribute_source = JsonAttrSource.right;
+			if(schPos == 0) expr.attribute_source = JsonAttrSource.LEFT;
+			else expr.attribute_source = JsonAttrSource.RIGHT;
 		}
 		else if(opType == OperationType.GROUP){
-			if(schPos == 0) expr.attribute_source = JsonAttrSource.group_key_var;
-			else expr.attribute_source = JsonAttrSource.group_array;
+			if(schPos == 0) expr.attribute_source = JsonAttrSource.GROUP_KEY_VAR;
+			else expr.attribute_source = JsonAttrSource.GROUP_ARRAY;
 		}
 		return expr;
 	}
@@ -162,13 +162,13 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.expression_type = JsonExprType.AGGREGATION;
 		switch (ctx.aggrFuncName().getText()) {
 		case AggrFuncNameString.SUM:
-			expr.aggregate_operation = AggrFuncNames.sum;
+			expr.aggregate_operation = AggrFuncNames.SUM;
 			break;
 		case AggrFuncNameString.AVERAGE:
-			expr.aggregate_operation = AggrFuncNames.average;
+			expr.aggregate_operation = AggrFuncNames.AVERAGE;
 			break;
 		case AggrFuncNameString.COUNT:
-			expr.aggregate_operation = AggrFuncNames.count;
+			expr.aggregate_operation = AggrFuncNames.COUNT;
 			break;
 		case AggrFuncNameString.MIN:
 			throw new SemanticErrorException("aggrFunc \"min\"currently not supported");
@@ -181,10 +181,10 @@ public class ExprVisitor extends JaqlGrammarBaseVisitor<JsonExpression> {
 		expr.retSchema = expr.aggregate_projection.retSchema;
 		if(expr.retSchema.getType() != JsonValueType.ARRAY)
 			throw new SemanticErrorException("expecting array input type");
-		if(expr.aggregate_operation == AggrFuncNames.sum || expr.aggregate_operation == AggrFuncNames.average){
+		if(expr.aggregate_operation == AggrFuncNames.SUM || expr.aggregate_operation == AggrFuncNames.AVERAGE){
 			if(expr.retSchema.items.getType() != JsonValueType.NUMBER && expr.retSchema.items.getType() != JsonValueType.INTEGER)
 				throw new SemanticErrorException("expecting array of number or integer");
-			else if(expr.aggregate_operation == AggrFuncNames.sum) expr.retSchema = expr.retSchema.items;
+			else if(expr.aggregate_operation == AggrFuncNames.SUM) expr.retSchema = expr.retSchema.items;
 			else expr.retSchema = new JsonSchema(JsonValueType.NUMBER);
 		}
 		else{

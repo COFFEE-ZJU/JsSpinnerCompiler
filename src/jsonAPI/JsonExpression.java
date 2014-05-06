@@ -15,7 +15,7 @@ import constants.Constants.JsonAttrSource;
 
 
 public class JsonExpression {
-	@Expose public String type = "expression_obj";
+	@Expose public String type = "EXPRESSION_OBJ";
 	@Expose public JsonExprType expression_type = null;		//ID, INT, NUMBER, BOOL, NULL, STRING, ADD, SUB, DIV, MUL, MOD, AGGREGATION
 	@Expose public AggrFuncNames aggregate_operation = null;
 	@Expose public JsonProjection aggregate_projection = null;

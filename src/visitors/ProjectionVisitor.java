@@ -47,7 +47,7 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 		else if(ctx.objectGen() != null) return visit(ctx.objectGen());
 		else{
 			JsonProjection proj = new JsonProjection();
-			proj.projection_type = JsonProjectionType.direct;
+			proj.projection_type = JsonProjectionType.DIRECT;
 			proj.expression = new ExprVisitor(haveDollar, renameIds, prevSchemas, opType).visit(ctx.exprs());
 			proj.retSchema = proj.expression.retSchema;
 			return proj;
@@ -57,7 +57,7 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 	@Override 
 	public JsonProjection visitArrayGen(JaqlGrammarParser.ArrayGenContext ctx) { 
 		JsonProjection proj = new JsonProjection();
-		proj.projection_type = JsonProjectionType.array;
+		proj.projection_type = JsonProjectionType.ARRAY;
 		proj.array_items = new ArrayList<JsonProjection>();
 		proj.retSchema = new JsonSchema(JsonValueType.ARRAY);
 		
@@ -79,7 +79,7 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 	@Override 
 	public JsonProjection visitObjectGen(JaqlGrammarParser.ObjectGenContext ctx) {
 		JsonProjection proj = new JsonProjection();
-		proj.projection_type = JsonProjectionType.object;
+		proj.projection_type = JsonProjectionType.OBJECT;
 		proj.fields = new HashMap<String, JsonProjection>();
 		proj.retSchema = new JsonSchema(JsonValueType.OBJECT);
 		
@@ -107,7 +107,7 @@ public class ProjectionVisitor extends JaqlGrammarBaseVisitor<JsonProjection>{
 		JsonProjection proj;
 		if(ctx.var() != null){
 			proj = new JsonProjection();
-			proj.projection_type = JsonProjectionType.direct;
+			proj.projection_type = JsonProjectionType.DIRECT;
 			proj.need_rename = false;
 			proj.expression = new ExprVisitor(haveDollar, renameIds, prevSchemas, opType).visit(ctx.var());
 			proj.retSchema = proj.expression.retSchema;

@@ -13,7 +13,7 @@ public class Constants {
 	public static enum JsonExprType {ID, INT, NUMBER, BOOL, NULL, STRING, ADD, SUB, DIV, MUL, MOD, AGGREGATION};
 	public static enum JsonCondType {AND, OR, NOT, GT, GE, LT, LE, EQ, NE, BOOL};
 	public static enum JsonValueType{ARRAY, BOOLEAN, INTEGER, NUMBER, NULL, OBJECT, STRING};
-	public static enum JsonProjectionType{object, array, direct};
+	public static enum JsonProjectionType{OBJECT, ARRAY, DIRECT};
 	public static enum ErrorType {SEMANTIC_ERROR, SYNTAX_ERROR};
 	
 	public static class WindowUnit {
@@ -32,8 +32,8 @@ public class Constants {
 		public static final String MAX = "max";
 	}
 	
-	public static enum JsonAttrSource{left, right, group_key_var, group_array};
-	public static enum AggrFuncNames{sum, average, count};
+	public static enum JsonAttrSource{LEFT, RIGHT, GROUP_KEY_VAR, GROUP_ARRAY};
+	public static enum AggrFuncNames{SUM, AVERAGE, COUNT};
 	public static Map<String, JsonValueType> stringToJsonValueType = new HashMap<String, Constants.JsonValueType>(){
 		private static final long serialVersionUID = -3817390131714920532L;
 		{
@@ -49,10 +49,10 @@ public class Constants {
 	public static enum DataType {STREAM,RELATION};
 	public static enum OperationType {JOIN, FILTER, TRANS, GROUP, STREAM, WINDOW, EXPAND, NULL};
 	public static enum JsonOpType{
-		root, error, 
-		projection, leaf, join, groupby_aggregation, selection, expand, 
-		rangewindow, rowwindow, partitionwindow,
-		istream, rstream, dstream
+		ROOT, ERROR, 
+		PROJECTION, LEAF, JOIN, GROUPBY_AGGREGATION, SELECTION, EXPAND, 
+		RANGEWINDOW, ROWWINDOW, PARTITIONWINDOW,
+		ISTREAM, RSTREAM, DSTREAM
 		};
 	
 	public static String LT = "<";
@@ -63,10 +63,10 @@ public class Constants {
 	public static String NE = "!=";
 	
 	public static boolean isStreamType(JsonOpType type){
-		if(type == Constants.JsonOpType.leaf ||
-    			type == Constants.JsonOpType.istream ||
-    			type == Constants.JsonOpType.rstream ||
-    			type == Constants.JsonOpType.dstream)
+		if(type == Constants.JsonOpType.LEAF ||
+    			type == Constants.JsonOpType.ISTREAM ||
+    			type == Constants.JsonOpType.RSTREAM ||
+    			type == Constants.JsonOpType.DSTREAM)
 			return true;
 		else
 			return false;
